@@ -1,0 +1,17 @@
+{
+  "cxxNamespace": ["toadly"],
+  "ios": {
+    "iosModuleName": "Toadly"
+  },
+  "android": {
+    "androidNamespace": ["toadly"],
+    "androidCxxLibName": "toadly"
+  },
+  "autolinking": {
+    "Toadly": {
+      "swift": "Toadly",
+      "kotlin": "Toadly"
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}

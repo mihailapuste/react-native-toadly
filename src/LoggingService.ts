@@ -84,7 +84,7 @@ class LoggingService {
   }
 
   public addLog(message: string): void {
-    this.captureLog('CUSTOM', message);
+    this.captureLog('TOADLY', message);
   }
 
   public clearLogs(): void {

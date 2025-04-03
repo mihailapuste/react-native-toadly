@@ -8,8 +8,8 @@ class LoggingService {
         let timestamp = ISO8601DateFormatter().string(from: Date())
         let logEntry = "[\(timestamp)] [\(level)] \(message)"
         
-        // Add to logs array, maintaining max size
         logs.append(logEntry)
+        
         if logs.count > maxLogs {
             logs.removeFirst()
         }

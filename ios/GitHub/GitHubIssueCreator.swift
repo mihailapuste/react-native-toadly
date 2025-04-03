@@ -1,25 +1,61 @@
 import Foundation
 
-class GitHubIssueService {
-    private static var githubToken: String?
-    private static var repoOwner: String?
-    private static var repoName: String?
-    
-    public static func setup(githubToken: String, repoOwner: String, repoName: String) {
-        self.githubToken = githubToken
-        self.repoOwner = repoOwner
-        self.repoName = repoName
+class GitHubIssueCreator {
+    public static func createIssueWithScreenshot(
+        email: String,
+        title: String,
+        details: String,
+        jsLogs: String,
+        screenshotUrl: String,
+        token: String,
+        owner: String,
+        repo: String,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
+        let nativeLogs = LoggingService.getRecentLogs()
         
-        LoggingService.info("GitHubIssueService setup completed")
+        let issueBody = """
+        **Reporter Email:** \(email)
+        
+        **Details:**
+        \(details)
+        
+        **Screenshot:**
+        ![Screenshot](\(screenshotUrl))
+        
+        ---
+        
+        ### JavaScript Logs
+        ```
+        \(jsLogs)
+        ```
+        
+        ### Native Logs
+        ```
+        \(nativeLogs)
+        ```
+        """
+        
+        createIssue(
+            title: title,
+            body: issueBody,
+            token: token,
+            owner: owner,
+            repo: repo,
+            completion: completion
+        )
     }
     
-    public static func submitIssue(email: String, title: String, details: String, jsLogs: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let token = githubToken, let owner = repoOwner, let repo = repoName else {
-            LoggingService.error("GitHub configuration not set. Call setup first.")
-            completion(.failure(NSError(domain: "GitHubIssueService", code: 1, userInfo: [NSLocalizedDescriptionKey: "GitHub configuration not set. Call setup first."])))
-            return
-        }
-        
+    public static func createIssueWithoutScreenshot(
+        email: String,
+        title: String,
+        details: String,
+        jsLogs: String,
+        token: String,
+        owner: String,
+        repo: String,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
         let nativeLogs = LoggingService.getRecentLogs()
         
         let issueBody = """
@@ -41,10 +77,28 @@ class GitHubIssueService {
         ```
         """
         
+        createIssue(
+            title: title,
+            body: issueBody,
+            token: token,
+            owner: owner,
+            repo: repo,
+            completion: completion
+        )
+    }
+    
+    private static func createIssue(
+        title: String,
+        body: String,
+        token: String,
+        owner: String,
+        repo: String,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
         let urlString = "https://api.github.com/repos/\(owner)/\(repo)/issues"
         guard let url = URL(string: urlString) else {
             LoggingService.error("Invalid URL")
-            completion(.failure(NSError(domain: "GitHubIssueService", code: 3, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            completion(.failure(NSError(domain: "GitHubIssueCreator", code: 3, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
         }
         
@@ -55,7 +109,7 @@ class GitHubIssueService {
         
         let issueData: [String: Any] = [
             "title": title,
-            "body": issueBody
+            "body": body
         ]
         
         do {
@@ -77,7 +131,7 @@ class GitHubIssueService {
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 LoggingService.error("Invalid response")
-                completion(.failure(NSError(domain: "GitHubIssueService", code: 4, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])))
+                completion(.failure(NSError(domain: "GitHubIssueCreator", code: 4, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])))
                 return
             }
             
@@ -89,13 +143,13 @@ class GitHubIssueService {
                 }
                 
                 LoggingService.error(errorMessage)
-                completion(.failure(NSError(domain: "GitHubIssueService", code: 5, userInfo: [NSLocalizedDescriptionKey: errorMessage])))
+                completion(.failure(NSError(domain: "GitHubIssueCreator", code: 5, userInfo: [NSLocalizedDescriptionKey: errorMessage])))
                 return
             }
             
             guard let data = data else {
                 LoggingService.error("No data received")
-                completion(.failure(NSError(domain: "GitHubIssueService", code: 6, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                completion(.failure(NSError(domain: "GitHubIssueCreator", code: 6, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
                 return
             }
             
@@ -106,7 +160,7 @@ class GitHubIssueService {
                     completion(.success(htmlUrl))
                 } else {
                     LoggingService.error("Could not parse response")
-                    completion(.failure(NSError(domain: "GitHubIssueService", code: 7, userInfo: [NSLocalizedDescriptionKey: "Could not parse response"])))
+                    completion(.failure(NSError(domain: "GitHubIssueCreator", code: 7, userInfo: [NSLocalizedDescriptionKey: "Could not parse response"])))
                 }
             } catch {
                 LoggingService.error("JSON parsing error: \(error.localizedDescription)")

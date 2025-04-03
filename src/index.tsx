@@ -3,8 +3,14 @@ import type { Toadly } from './Toadly.nitro';
 
 const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
 
-export function multiply(a: number, b: number): number {
-  return ToadlyHybridObject.multiply(a, b);
+/**
+ * Setup the Toadly module with GitHub configuration
+ * @param githubToken GitHub access token from environment variables
+ * @param repoOwner Repository owner (username or organization)
+ * @param repoName Repository name
+ */
+export function setup(githubToken: string, repoOwner: string, repoName: string): void {
+  return ToadlyHybridObject.setup(githubToken, repoOwner, repoName);
 }
 
 /**

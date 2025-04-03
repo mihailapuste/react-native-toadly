@@ -16,6 +16,7 @@ namespace margelo::nitro::toadly { class HybridToadlySpec; }
 #include <NitroModules/Result.hpp>
 #include <exception>
 #include <memory>
+#include <string>
 
 // C++ helpers for Swift
 #include "Toadly-Swift-Cxx-Bridge.hpp"

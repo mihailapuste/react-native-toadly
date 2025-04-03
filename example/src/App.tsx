@@ -1,29 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Text,
   View,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
-import { multiply, show } from 'react-native-toadly';
+import * as Toadly from 'react-native-toadly';
+import { GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME } from '@env';
+
+Toadly.setup(GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME);
 
 export default function App() {
-  const [firstNumber, setFirstNumber] = useState('3');
-  const [secondNumber, setSecondNumber] = useState('7');
-  const [result, setResult] = useState(multiply(3, 7).toString());
-
-  const calculateResult = () => {
-    const num1 = parseFloat(firstNumber) || 0;
-    const num2 = parseFloat(secondNumber) || 0;
-    setResult(multiply(num1, num2).toString());
-  };
+  
 
   const handleReportBug = () => {
-    show();
+    Toadly.show();
   };
 
   return (
@@ -33,36 +27,7 @@ export default function App() {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.calculatorContainer}>
-          <Text style={styles.title}>Multiply Calculator</Text>
-
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              value={firstNumber}
-              onChangeText={setFirstNumber}
-              keyboardType="numeric"
-              placeholder="Enter first number"
-            />
-            <Text style={styles.operator}>×</Text>
-            <TextInput
-              style={styles.input}
-              value={secondNumber}
-              onChangeText={setSecondNumber}
-              keyboardType="numeric"
-              placeholder="Enter second number"
-            />
-          </View>
-
-          <TouchableOpacity style={styles.button} onPress={calculateResult}>
-            <Text style={styles.buttonText}>Calculate</Text>
-          </TouchableOpacity>
-
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultLabel}>Result:</Text>
-            <Text style={styles.resultValue}>{result}</Text>
-          </View>
-
-          <View style={styles.divider} />
+          <Text style={styles.title}>Toadly</Text>
 
           <TouchableOpacity
             style={styles.reportButton}

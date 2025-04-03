@@ -39,15 +39,6 @@ namespace margelo::nitro::toadly::bridge::swift {
   using std__weak_ptr_margelo__nitro__toadly__HybridToadlySpec_ = std::weak_ptr<margelo::nitro::toadly::HybridToadlySpec>;
   inline std__weak_ptr_margelo__nitro__toadly__HybridToadlySpec_ weakify_std__shared_ptr_margelo__nitro__toadly__HybridToadlySpec_(const std::shared_ptr<margelo::nitro::toadly::HybridToadlySpec>& strong) { return strong; }
   
-  // pragma MARK: Result<double>
-  using Result_double_ = Result<double>;
-  inline Result_double_ create_Result_double_(double value) {
-    return Result<double>::withValue(std::move(value));
-  }
-  inline Result_double_ create_Result_double_(const std::exception_ptr& error) {
-    return Result<double>::withError(error);
-  }
-  
   // pragma MARK: Result<void>
   using Result_void_ = Result<void>;
   inline Result_void_ create_Result_void_() {

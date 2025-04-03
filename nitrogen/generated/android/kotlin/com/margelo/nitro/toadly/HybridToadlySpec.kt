@@ -42,11 +42,11 @@ abstract class HybridToadlySpec: HybridObject() {
   // Methods
   @DoNotStrip
   @Keep
-  abstract fun multiply(a: Double, b: Double): Double
+  abstract fun show(): Unit
   
   @DoNotStrip
   @Keep
-  abstract fun show(): Unit
+  abstract fun setup(githubToken: String, repoOwner: String, repoName: String): Unit
 
   private external fun initHybrid(): HybridData
 

@@ -51,8 +51,8 @@ namespace margelo::nitro::toadly {
 
   public:
     // Methods
-    double multiply(double a, double b) override;
     void show() override;
+    void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) override;
 
   private:
     friend HybridBase;

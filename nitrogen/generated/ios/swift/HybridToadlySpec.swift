@@ -14,8 +14,8 @@ public protocol HybridToadlySpec_protocol: HybridObject {
   
 
   // Methods
-  func multiply(a: Double, b: Double) throws -> Double
   func show() throws -> Void
+  func setup(githubToken: String, repoOwner: String, repoName: String) throws -> Void
 }
 
 /// See ``HybridToadlySpec``

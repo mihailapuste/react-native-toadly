@@ -9,7 +9,7 @@
 
 
 
-
+#include <string>
 
 namespace margelo::nitro::toadly {
 
@@ -32,14 +32,13 @@ namespace margelo::nitro::toadly {
   
 
   // Methods
-  double JHybridToadlySpec::multiply(double a, double b) {
-    static const auto method = javaClassStatic()->getMethod<double(double /* a */, double /* b */)>("multiply");
-    auto __result = method(_javaPart, a, b);
-    return __result;
-  }
   void JHybridToadlySpec::show() {
     static const auto method = javaClassStatic()->getMethod<void()>("show");
     method(_javaPart);
+  }
+  void JHybridToadlySpec::setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) {
+    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* githubToken */, jni::alias_ref<jni::JString> /* repoOwner */, jni::alias_ref<jni::JString> /* repoName */)>("setup");
+    method(_javaPart, jni::make_jstring(githubToken), jni::make_jstring(repoOwner), jni::make_jstring(repoName));
   }
 
 } // namespace margelo::nitro::toadly

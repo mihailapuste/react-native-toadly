@@ -15,7 +15,7 @@
 
 
 
-
+#include <string>
 
 namespace margelo::nitro::toadly {
 
@@ -48,8 +48,8 @@ namespace margelo::nitro::toadly {
 
     public:
       // Methods
-      virtual double multiply(double a, double b) = 0;
       virtual void show() = 0;
+      virtual void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) = 0;
 
     protected:
       // Hybrid Setup

@@ -101,21 +101,20 @@ public class HybridToadlySpec_cxx {
 
   // Methods
   @inline(__always)
-  public final func multiply(a: Double, b: Double) -> bridge.Result_double_ {
+  public final func show() -> bridge.Result_void_ {
     do {
-      let __result = try self.__implementation.multiply(a: a, b: b)
-      let __resultCpp = __result
-      return bridge.create_Result_double_(__resultCpp)
+      try self.__implementation.show()
+      return bridge.create_Result_void_()
     } catch (let __error) {
       let __exceptionPtr = __error.toCpp()
-      return bridge.create_Result_double_(__exceptionPtr)
+      return bridge.create_Result_void_(__exceptionPtr)
     }
   }
   
   @inline(__always)
-  public final func show() -> bridge.Result_void_ {
+  public final func setup(githubToken: std.string, repoOwner: std.string, repoName: std.string) -> bridge.Result_void_ {
     do {
-      try self.__implementation.show()
+      try self.__implementation.setup(githubToken: String(githubToken), repoOwner: String(repoOwner), repoName: String(repoName))
       return bridge.create_Result_void_()
     } catch (let __error) {
       let __exceptionPtr = __error.toCpp()

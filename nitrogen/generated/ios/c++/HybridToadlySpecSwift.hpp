@@ -14,7 +14,7 @@ namespace Toadly { class HybridToadlySpec_cxx; }
 
 
 
-
+#include <string>
 
 #include "Toadly-Swift-Cxx-Umbrella.hpp"
 
@@ -55,16 +55,14 @@ namespace margelo::nitro::toadly {
 
   public:
     // Methods
-    inline double multiply(double a, double b) override {
-      auto __result = _swiftPart.multiply(std::forward<decltype(a)>(a), std::forward<decltype(b)>(b));
+    inline void show() override {
+      auto __result = _swiftPart.show();
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }
-      auto __value = std::move(__result.value());
-      return __value;
     }
-    inline void show() override {
-      auto __result = _swiftPart.show();
+    inline void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) override {
+      auto __result = _swiftPart.setup(githubToken, repoOwner, repoName);
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

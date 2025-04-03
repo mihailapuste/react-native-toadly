@@ -27,54 +27,62 @@ class GitHubService {
             return
         }
 
-       guard let imageData = screenshotData else {
-            GitHubIssueCreator.createIssueWithoutScreenshot(
+        if screenshotData == nil {
+            createGitHubIssue(email: email, title: title, details: details, jsLogs: jsLogs, 
+                             screenshotUrl: nil, token: token, owner: owner, repo: repo, completion: completion)
+            return
+        }
+        
+        GitHubImageUploader.uploadImage(
+            imageData: screenshotData!,
+            token: token,
+            owner: owner,
+            repo: repo
+        ) { result in
+            var screenshotUrl: String? = nil
+            
+            switch result {
+            case .success(let imageUrl):
+                screenshotUrl = imageUrl
+            case .failure(let error):
+                LoggingService.error("Failed to upload screenshot: \(error.localizedDescription)")
+            }
+            
+            self.createGitHubIssue(
                 email: email,
                 title: title,
                 details: details,
                 jsLogs: jsLogs,
+                screenshotUrl: screenshotUrl,
                 token: token,
                 owner: owner,
                 repo: repo,
                 completion: completion
             )
-            return
         }
-        
-        GitHubImageUploader.uploadImage(
-            imageData: imageData,
-                token: token,
-                owner: owner,
-                repo: repo
-            ) { result in
-                switch result {
-                case .success(let imageUrl):
-                    GitHubIssueCreator.createIssueWithScreenshot(
-                        email: email,
-                        title: title,
-                        details: details,
-                        jsLogs: jsLogs,
-                        screenshotUrl: imageUrl,
-                        token: token,
-                        owner: owner,
-                        repo: repo,
-                        completion: completion
-                    )
-                case .failure(let error):
-                    // Continue with issue creation without the screenshot
-                    LoggingService.error("Failed to upload screenshot: \(error.localizedDescription)")
-
-                    GitHubIssueCreator.createIssueWithoutScreenshot(
-                        email: email,
-                        title: title,
-                        details: details,
-                        jsLogs: jsLogs,
-                        token: token,
-                        owner: owner,
-                        repo: repo,
-                        completion: completion
-                    )
-                }
-            }
+    }
+    
+    private static func createGitHubIssue(
+        email: String,
+        title: String,
+        details: String,
+        jsLogs: String,
+        screenshotUrl: String?,
+        token: String,
+        owner: String,
+        repo: String,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
+        GitHubIssueCreator.createIssue(
+            email: email,
+            title: title,
+            details: details,
+            jsLogs: jsLogs,
+            screenshotUrl: screenshotUrl,
+            token: token,
+            owner: owner,
+            repo: repo,
+            completion: completion
+        )
     }
 }

@@ -1,12 +1,12 @@
 import Foundation
 
 class GitHubIssueCreator {
-    public static func createIssueWithScreenshot(
+    public static func createIssue(
         email: String,
         title: String,
         details: String,
         jsLogs: String,
-        screenshotUrl: String,
+        screenshotUrl: String? = nil,
         token: String,
         owner: String,
         repo: String,
@@ -14,15 +14,24 @@ class GitHubIssueCreator {
     ) {
         let nativeLogs = LoggingService.getRecentLogs()
         
-        let issueBody = """
+        var issueBody = """
         **Reporter Email:** \(email)
         
         **Details:**
         \(details)
         
-        **Screenshot:**
-        ![Screenshot](\(screenshotUrl))
+        """
         
+        // Add screenshot section if a URL is provided
+        if let screenshotUrl = screenshotUrl, !screenshotUrl.isEmpty {
+            issueBody += """
+            **Screenshot:**
+            ![Screenshot](\(screenshotUrl))
+            
+            """
+        }
+        
+        issueBody += """
         ---
         
         ### JavaScript Logs
@@ -36,7 +45,7 @@ class GitHubIssueCreator {
         ```
         """
         
-        createIssue(
+        submitIssueToGitHub(
             title: title,
             body: issueBody,
             token: token,
@@ -46,48 +55,7 @@ class GitHubIssueCreator {
         )
     }
     
-    public static func createIssueWithoutScreenshot(
-        email: String,
-        title: String,
-        details: String,
-        jsLogs: String,
-        token: String,
-        owner: String,
-        repo: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
-        let nativeLogs = LoggingService.getRecentLogs()
-        
-        let issueBody = """
-        **Reporter Email:** \(email)
-        
-        **Details:**
-        \(details)
-        
-        ---
-        
-        ### JavaScript Logs
-        ```
-        \(jsLogs)
-        ```
-        
-        ### Native Logs
-        ```
-        \(nativeLogs)
-        ```
-        """
-        
-        createIssue(
-            title: title,
-            body: issueBody,
-            token: token,
-            owner: owner,
-            repo: repo,
-            completion: completion
-        )
-    }
-    
-    private static func createIssue(
+    private static func submitIssueToGitHub(
         title: String,
         body: String,
         token: String,

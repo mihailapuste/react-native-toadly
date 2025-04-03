@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Text,
   View,
@@ -15,8 +15,44 @@ Toadly.setup(GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME);
 
 export default function App() {
   
+  useEffect(() => {
+    console.log('App initialized');
+    console.info('Environment loaded successfully');
+    
+    Toadly.log('App component mounted');
+    
+    const logExamples = () => {
+      console.log('User interaction occurred');
+      console.info('Data fetched successfully');
+      console.warn('Network latency detected');
+      
+      Toadly.log('Custom business logic executed');
+    };
+    
+    logExamples();
+    
+    setTimeout(() => {
+      try {
+        throw new Error('Example error for demonstration');
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Caught error:', error.message);
+          Toadly.log(`Error handled: ${error.message}`);
+        } else {
+          console.error('Caught unknown error');
+          Toadly.log('Error handled: Unknown error');
+        }
+      }
+    }, 2000);
+    
+    return () => {
+      Toadly.log('App component will unmount');
+    };
+  }, []);
 
   const handleReportBug = () => {
+    console.log('User initiated bug report');
+    Toadly.log('Bug report requested by user');
     Toadly.show();
   };
 
@@ -29,11 +65,38 @@ export default function App() {
         <View style={styles.calculatorContainer}>
           <Text style={styles.title}>Toadly</Text>
 
+          <Text style={styles.description}>
+            This example demonstrates the Toadly bug reporting tool with automatic log collection.
+            When you tap the button below, the last 50 logs from both JavaScript and native code
+            will be included in your bug report.
+          </Text>
+
           <TouchableOpacity
             style={styles.reportButton}
             onPress={handleReportBug}
           >
-            <Text style={styles.buttonText}>Report a Bug</Text>
+            <Text style={styles.reportButtonText}>Report a Bug</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.logButton}
+            onPress={() => {
+              Toadly.log('User tapped the "Add Log" button');
+              console.log('Log button pressed at ' + new Date().toISOString());
+            }}
+          >
+            <Text style={styles.logButtonText}>Add Log Entry</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => {
+              console.log('Clearing logs');
+              Toadly.clearLogs();
+              console.log('Logs cleared at ' + new Date().toISOString());
+            }}
+          >
+            <Text style={styles.clearButtonText}>Clear Logs</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -44,7 +107,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F5FCFF',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -56,76 +119,61 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
     color: '#333',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 20,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    fontSize: 18,
-    backgroundColor: '#fafafa',
-  },
-  operator: {
-    fontSize: 24,
-    marginHorizontal: 10,
-    color: '#666',
-  },
-  button: {
-    backgroundColor: '#007bff',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  resultContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  resultLabel: {
-    fontSize: 18,
-    marginRight: 10,
-    color: '#666',
-  },
-  resultValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#ddd',
-    marginVertical: 20,
+    lineHeight: 22,
+    textAlign: 'center',
   },
   reportButton: {
-    backgroundColor: '#ff6b6b',
+    backgroundColor: '#FF6347',
+    padding: 15,
     borderRadius: 8,
-    paddingVertical: 12,
     alignItems: 'center',
+    marginTop: 10,
+  },
+  reportButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  logButton: {
+    backgroundColor: '#4682B4',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  logButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    backgroundColor: '#708090',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  clearButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

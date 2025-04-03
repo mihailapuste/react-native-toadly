@@ -42,11 +42,15 @@ abstract class HybridToadlySpec: HybridObject() {
   // Methods
   @DoNotStrip
   @Keep
-  abstract fun show(): Unit
+  abstract fun setup(githubToken: String, repoOwner: String, repoName: String): Unit
   
   @DoNotStrip
   @Keep
-  abstract fun setup(githubToken: String, repoOwner: String, repoName: String): Unit
+  abstract fun addJSLogs(logs: String): Unit
+  
+  @DoNotStrip
+  @Keep
+  abstract fun show(): Unit
 
   private external fun initHybrid(): HybridData
 

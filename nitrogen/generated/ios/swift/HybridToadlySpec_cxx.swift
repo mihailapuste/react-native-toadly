@@ -101,9 +101,9 @@ public class HybridToadlySpec_cxx {
 
   // Methods
   @inline(__always)
-  public final func show() -> bridge.Result_void_ {
+  public final func setup(githubToken: std.string, repoOwner: std.string, repoName: std.string) -> bridge.Result_void_ {
     do {
-      try self.__implementation.show()
+      try self.__implementation.setup(githubToken: String(githubToken), repoOwner: String(repoOwner), repoName: String(repoName))
       return bridge.create_Result_void_()
     } catch (let __error) {
       let __exceptionPtr = __error.toCpp()
@@ -112,9 +112,20 @@ public class HybridToadlySpec_cxx {
   }
   
   @inline(__always)
-  public final func setup(githubToken: std.string, repoOwner: std.string, repoName: std.string) -> bridge.Result_void_ {
+  public final func addJSLogs(logs: std.string) -> bridge.Result_void_ {
     do {
-      try self.__implementation.setup(githubToken: String(githubToken), repoOwner: String(repoOwner), repoName: String(repoName))
+      try self.__implementation.addJSLogs(logs: String(logs))
+      return bridge.create_Result_void_()
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_void_(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
+  public final func show() -> bridge.Result_void_ {
+    do {
+      try self.__implementation.show()
       return bridge.create_Result_void_()
     } catch (let __error) {
       let __exceptionPtr = __error.toCpp()

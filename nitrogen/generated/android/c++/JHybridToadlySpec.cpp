@@ -32,13 +32,17 @@ namespace margelo::nitro::toadly {
   
 
   // Methods
-  void JHybridToadlySpec::show() {
-    static const auto method = javaClassStatic()->getMethod<void()>("show");
-    method(_javaPart);
-  }
   void JHybridToadlySpec::setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) {
     static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* githubToken */, jni::alias_ref<jni::JString> /* repoOwner */, jni::alias_ref<jni::JString> /* repoName */)>("setup");
     method(_javaPart, jni::make_jstring(githubToken), jni::make_jstring(repoOwner), jni::make_jstring(repoName));
+  }
+  void JHybridToadlySpec::addJSLogs(const std::string& logs) {
+    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* logs */)>("addJSLogs");
+    method(_javaPart, jni::make_jstring(logs));
+  }
+  void JHybridToadlySpec::show() {
+    static const auto method = javaClassStatic()->getMethod<void()>("show");
+    method(_javaPart);
   }
 
 } // namespace margelo::nitro::toadly

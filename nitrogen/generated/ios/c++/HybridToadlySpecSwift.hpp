@@ -55,14 +55,20 @@ namespace margelo::nitro::toadly {
 
   public:
     // Methods
-    inline void show() override {
-      auto __result = _swiftPart.show();
+    inline void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) override {
+      auto __result = _swiftPart.setup(githubToken, repoOwner, repoName);
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }
     }
-    inline void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) override {
-      auto __result = _swiftPart.setup(githubToken, repoOwner, repoName);
+    inline void addJSLogs(const std::string& logs) override {
+      auto __result = _swiftPart.addJSLogs(logs);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+    }
+    inline void show() override {
+      auto __result = _swiftPart.show();
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

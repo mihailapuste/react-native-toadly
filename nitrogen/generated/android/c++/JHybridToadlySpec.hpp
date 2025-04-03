@@ -51,8 +51,9 @@ namespace margelo::nitro::toadly {
 
   public:
     // Methods
-    void show() override;
     void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) override;
+    void addJSLogs(const std::string& logs) override;
+    void show() override;
 
   private:
     friend HybridBase;

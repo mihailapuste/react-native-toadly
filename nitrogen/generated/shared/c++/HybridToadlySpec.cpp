@@ -14,8 +14,9 @@ namespace margelo::nitro::toadly {
     HybridObject::loadHybridMethods();
     // load custom methods/properties
     registerHybrids(this, [](Prototype& prototype) {
-      prototype.registerHybridMethod("show", &HybridToadlySpec::show);
       prototype.registerHybridMethod("setup", &HybridToadlySpec::setup);
+      prototype.registerHybridMethod("addJSLogs", &HybridToadlySpec::addJSLogs);
+      prototype.registerHybridMethod("show", &HybridToadlySpec::show);
     });
   }
 

@@ -10,7 +10,6 @@ class BugReportDialog {
         onSubmit: @escaping (String, String, String) -> Void,
         onCancel: @escaping () -> Void
     ) {
-        // Ensure UI updates are on the main thread
         DispatchQueue.main.async {
             self.onSubmit = onSubmit
             self.onCancel = onCancel
@@ -65,13 +64,28 @@ class BugReportDialog {
     }
 
     static func getRootViewController() -> UIViewController? {
-        // Find the root view controller
-        // This logic might need adjustment based on your app's navigation structure
-        let keyWindow = UIApplication.shared.connectedScenes
-            .filter({$0.activationState == .foregroundActive})
-            .compactMap({$0 as? UIWindowScene})
-            .first?.windows
-            .filter({$0.isKeyWindow}).first
-        return keyWindow?.rootViewController
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
+                LoggingService.error("No active window scene found")
+                return nil
+        }
+        
+        guard let window = windowScene.windows.first(where: { $0.isKeyWindow }) ?? windowScene.windows.first else {
+            LoggingService.error("No key window found in active scene")
+            return nil
+        }
+        
+        var topController = window.rootViewController
+        
+        guard let rootVC = topController else {
+            LoggingService.error("Root view controller is nil")
+            return nil
+        }
+        
+        while let presentedVC = rootVC.presentedViewController {
+            topController = presentedVC
+        }
+        
+        return topController
     }
 }

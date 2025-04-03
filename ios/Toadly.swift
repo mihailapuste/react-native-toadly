@@ -19,24 +19,20 @@ class Toadly: HybridToadlySpec {
     private func captureScreenshot() {
         LoggingService.info("Capturing screenshot")
         
-        // Use a safer approach to capture screenshots
         DispatchQueue.main.async {
             guard let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.windows.first else {
                 LoggingService.error("Failed to find key window for screenshot")
                 return
             }
             
-            // Create a safer context for capturing screenshots
             let format = UIGraphicsImageRendererFormat()
             format.scale = UIScreen.main.scale
             format.opaque = false
             
-            // Use try-catch to handle potential errors
             do {
                 let renderer = UIGraphicsImageRenderer(bounds: keyWindow.bounds, format: format)
                 
                 let screenshot = renderer.image { context in
-                    // Safely capture the window contents
                     keyWindow.layer.render(in: context.cgContext)
                 }
                 
@@ -49,7 +45,6 @@ class Toadly: HybridToadlySpec {
                 }
             } catch {
                 LoggingService.error("Error capturing screenshot: \(error.localizedDescription)")
-                // Continue without a screenshot
             }
         }
     }
@@ -57,10 +52,8 @@ class Toadly: HybridToadlySpec {
     public func show() throws {
         LoggingService.info("Showing bug report dialog")
         
-        // Capture screenshot first, then show dialog after a short delay to ensure completion
         captureScreenshot()
         
-        // Wait a short moment to ensure screenshot capture completes
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
             

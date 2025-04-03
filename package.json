@@ -174,5 +174,13 @@
     "languages": "kotlin-swift",
     "type": "nitro-module",
     "version": "0.49.0"
+  },
+  "codegenConfig": {
+    "name": "Toadly",
+    "type": "all",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.toadly"
+    }
   }
 }

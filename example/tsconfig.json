@@ -1,0 +1,9 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "react-native-toadly": ["../src/index"]
+    }
+  },
+  "include": ["src", "config.example.ts", "config.ts"]
+}

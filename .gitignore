@@ -82,5 +82,6 @@ lib/
 ios/generated
 android/generated
 
-# React Native Nitro Modules
-nitrogen/
+# Config files
+example/config.ts
+!example/config.example.ts

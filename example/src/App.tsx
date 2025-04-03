@@ -24,26 +24,11 @@ export default function App() {
     const logExamples = () => {
       console.log('User interaction occurred');
       console.info('Data fetched successfully');
-      console.warn('Network latency detected');
       
       Toadly.log('Custom business logic executed');
     };
     
     logExamples();
-    
-    setTimeout(() => {
-      try {
-        throw new Error('Example error for demonstration');
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Caught error:', error.message);
-          Toadly.log(`Error handled: ${error.message}`);
-        } else {
-          console.error('Caught unknown error');
-          Toadly.log('Error handled: Unknown error');
-        }
-      }
-    }, 2000);
     
     return () => {
       Toadly.log('App component will unmount');

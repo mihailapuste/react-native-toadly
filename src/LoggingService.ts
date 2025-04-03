@@ -8,8 +8,20 @@ class LoggingService {
     warn: console.warn,
     error: console.error,
   };
+  private isOverridden: boolean = false;
 
   private constructor() {
+    this.setupConsoleOverrides();
+  }
+
+  private setupConsoleOverrides() {
+    // Only override once to prevent recursion
+    if (this.isOverridden) {
+      return;
+    }
+
+    this.isOverridden = true;
+
     console.log = (...args: any[]) => {
       this.captureLog('LOG', ...args);
       this.originalConsole.log(...args);
@@ -39,26 +51,31 @@ class LoggingService {
   }
 
   private captureLog(level: string, ...args: any[]): void {
-    const timestamp = new Date().toISOString();
-    const message = args
-      .map((arg) => {
-        if (typeof arg === 'object') {
-          try {
-            return JSON.stringify(arg);
-          } catch (e) {
-            return String(arg);
+    try {
+      const timestamp = new Date().toISOString();
+      const message = args
+        .map((arg) => {
+          if (typeof arg === 'object') {
+            try {
+              return JSON.stringify(arg);
+            } catch (e) {
+              return String(arg);
+            }
           }
-        }
-        return String(arg);
-      })
-      .join(' ');
+          return String(arg);
+        })
+        .join(' ');
 
-    const logEntry = `[${timestamp}] [${level}] ${message}`;
-    
-    this.logs.push(logEntry);
+      const logEntry = `[${timestamp}] [${level}] ${message}`;
+      
+      this.logs.push(logEntry);
 
-    if (this.logs.length > this.maxLogs) {
-      this.logs.shift();
+      if (this.logs.length > this.maxLogs) {
+        this.logs.shift();
+      }
+    } catch (error) {
+      // Use original console to avoid recursion
+      this.originalConsole.error('Error in LoggingService:', error);
     }
   }
 

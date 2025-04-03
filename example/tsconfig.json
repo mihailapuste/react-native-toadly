@@ -5,5 +5,5 @@
       "react-native-toadly": ["../src/index"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "config.example.ts", "config.ts"]
 }

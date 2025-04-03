@@ -82,10 +82,6 @@ lib/
 ios/generated
 android/generated
 
-# Environment variables
-.env
-.env.local
-**/.env
-**/.env.local
-!.env.example
-!**/.env.example
+# Config files
+example/config.ts
+!example/config.example.ts

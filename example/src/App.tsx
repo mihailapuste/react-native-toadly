@@ -9,9 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 import * as Toadly from 'react-native-toadly';
-import { GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME } from '@env';
+import { config } from '../config';
 
-Toadly.setup(GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME);
+const { token, repoOwner, repoName } = config.github;
+Toadly.setup(token, repoOwner, repoName);
 
 export default function App() {
   

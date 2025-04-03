@@ -14,36 +14,13 @@ class GitHubIssueCreator {
     ) {
         let nativeLogs = LoggingService.getRecentLogs()
         
-        var issueBody = """
-        **Reporter Email:** \(email)
-        
-        **Details:**
-        \(details)
-        
-        """
-        
-        // Add screenshot section if a URL is provided
-        if let screenshotUrl = screenshotUrl, !screenshotUrl.isEmpty {
-            issueBody += """
-            **Screenshot:**
-            ![Screenshot](\(screenshotUrl))
-            
-            """
-        }
-        
-        issueBody += """
-        ---
-        
-        ### JavaScript Logs
-        ```
-        \(jsLogs)
-        ```
-        
-        ### Native Logs
-        ```
-        \(nativeLogs)
-        ```
-        """
+        let issueBody = GitHubIssueTemplate.generateIssueBody(
+            email: email,
+            details: details,
+            jsLogs: jsLogs,
+            nativeLogs: nativeLogs,
+            screenshotUrl: screenshotUrl
+        )
         
         submitIssueToGitHub(
             title: title,

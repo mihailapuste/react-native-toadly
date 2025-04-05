@@ -1,6 +1,6 @@
 import { NitroModules } from 'react-native-nitro-modules';
 import type { Toadly } from './Toadly.nitro';
-import { LoggingService, ErrorHandlingService } from './services';
+import { LoggingService, ErrorHandlingService, NetworkMonitoringService } from './services';
 
 // Create the hybrid object for internal use
 const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
@@ -68,9 +68,8 @@ export function enableAutomaticCrashReporting(enable: boolean = true): void {
 }
 
 /**
- * Enable automatic GitHub issue submission for JS errors
- * When enabled, JS errors will automatically be submitted as GitHub issues
- * @param enable Whether to enable automatic issue submission (default: true)
+ * Enable automatic issue submission for JavaScript errors
+ * @param enable Whether to enable automatic issue submission
  */
 export function enableAutomaticIssueSubmission(enable: boolean = true): void {
   ErrorHandlingService.enableAutomaticIssueSubmission(enable);
@@ -84,6 +83,38 @@ export function enableAutomaticIssueSubmission(enable: boolean = true): void {
  */
 export function logError(error: Error, fatal: boolean = false): void {
   LoggingService.logError(error, fatal);
+}
+
+/**
+ * Start monitoring network requests
+ * This will capture all fetch and XMLHttpRequest calls
+ * Network requests will be included in bug reports
+ */
+export function startNetworkMonitoring(): void {
+  NetworkMonitoringService.getInstance().startMonitoring();
+  LoggingService.addLog('Network monitoring started');
+}
+
+/**
+ * Stop monitoring network requests
+ */
+export function stopNetworkMonitoring(): void {
+  NetworkMonitoringService.getInstance().stopMonitoring();
+  LoggingService.addLog('Network monitoring stopped');
+}
+
+/**
+ * Check if network monitoring is active
+ */
+export function isNetworkMonitoringActive(): boolean {
+  return NetworkMonitoringService.getInstance().isMonitoring();
+}
+
+/**
+ * Clear network request history
+ */
+export function clearNetworkHistory(): void {
+  NetworkMonitoringService.getInstance().clearRequests();
 }
 
 // Export internal objects for use by ErrorHandlingService

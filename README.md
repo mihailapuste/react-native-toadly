@@ -1,3 +1,6 @@
+  <img src="https://github.com/user-attachments/assets/0c6825a4-ad3d-4b50-964e-f05f86507b4a" alt="Screenshot" height="300">
+
+
 # Toadly for React Native
 
 A lightweight, open-source bug reporting tool for React Native applications (work in progress)

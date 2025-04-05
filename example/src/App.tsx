@@ -14,6 +14,9 @@ import { config } from '../config';
 const { token, repoOwner, repoName } = config.github;
 Toadly.setup(token, repoOwner, repoName);
 
+// Enable automatic issue submission for JS errors
+Toadly.enableAutomaticIssueSubmission(true);
+
 export default function App() {
   
   useEffect(() => {
@@ -40,6 +43,39 @@ export default function App() {
     console.log('User initiated bug report');
     Toadly.log('Bug report requested by user');
     Toadly.show();
+  };
+  
+  const handleTriggerError = () => {
+    try {
+      // Simulate an error
+      console.log('Attempting to trigger an error...');
+      Toadly.log('User triggered a sample error');
+      
+      // This will cause an error - using type assertion to silence TypeScript error
+      // @ts-ignore - This is intentionally causing an error for demonstration
+      const obj = null;
+      (obj as any).nonExistentMethod();
+    } catch (error) {
+      // Manually log the caught error
+      console.error('Caught error:', error);
+      
+      // Log the error to Toadly
+      if (error instanceof Error) {
+        Toadly.logError(error, false);
+      }
+    }
+  };
+  
+  const handleTriggerFatalError = () => {
+    console.log('Triggering a fatal error...');
+    Toadly.log('User triggered a fatal error');
+    
+    // This will cause an uncaught error that will be automatically reported
+    setTimeout(() => {
+      // @ts-ignore - This is intentionally causing an error for demonstration
+      const array = undefined;
+      (array as any).push('This will crash');
+    }, 100);
   };
 
   return (
@@ -72,6 +108,20 @@ export default function App() {
             }}
           >
             <Text style={styles.logButtonText}>Add Log Entry</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.errorButton}
+            onPress={handleTriggerError}
+          >
+            <Text style={styles.errorButtonText}>Trigger Caught Error</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.fatalButton}
+            onPress={handleTriggerFatalError}
+          >
+            <Text style={styles.fatalButtonText}>Trigger Fatal Error</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
@@ -146,6 +196,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   logButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  errorButton: {
+    backgroundColor: '#FFA500',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  errorButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  fatalButton: {
+    backgroundColor: '#DC143C',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  fatalButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',

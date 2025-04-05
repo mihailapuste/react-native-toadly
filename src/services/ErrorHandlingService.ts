@@ -1,5 +1,11 @@
 // Import necessary types
-import type { ILoggingService, IErrorHandlingService } from './interfaces';
+import type { IErrorHandlingService } from './interfaces';
+import { NitroModules } from 'react-native-nitro-modules';
+import type { Toadly } from '../Toadly.nitro';
+import { LoggingService } from './index';
+
+// Create direct access to the hybrid object
+const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
 
 /**
  * ErrorHandlingService manages JavaScript error handling and automatic issue submission
@@ -82,11 +88,8 @@ class ErrorHandlingService implements IErrorHandlingService {
         `Component info: ${this.getComponentInfo()}`
       ].filter(Boolean).join('\n');
       
-      // Dynamically import LoggingService to avoid circular dependency
-      const loggingService = require('./LoggingService').default as ILoggingService;
-      
       // Add to logs via LoggingService
-      loggingService.addLog(crashLog);
+      LoggingService.addLog(crashLog);
     } catch (captureError) {
       console.error('Error capturing JS crash:', captureError);
     }
@@ -101,12 +104,14 @@ class ErrorHandlingService implements IErrorHandlingService {
       const errorType = isFatal ? 'Fatal Error' : 'Non-Fatal Error';
       const title = `[${errorType}] ${error.message.substring(0, 100)}`;
       
-      // Import dynamically to avoid circular dependencies
-      const { _createIssueWithTitle } = require('../index');
-      
       // Use a slight delay to ensure logs are captured
       setTimeout(() => {
-        _createIssueWithTitle(title);
+        // Get JavaScript logs and send them to native side before creating issue
+        const jsLogs = LoggingService.getRecentLogs();
+        ToadlyHybridObject.addJSLogs(jsLogs);
+        
+        // Create the issue with the title
+        ToadlyHybridObject.createIssueWithTitle(title);
       }, 100);
     } catch (submitError) {
       console.error('Error submitting GitHub issue:', submitError);

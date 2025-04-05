@@ -10,7 +10,7 @@ const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
  * Not exposed in the public API - used internally by error handling
  * @param title The title for the GitHub issue
  */
-const _createIssueWithTitle = (title: string): void => {
+export const _createIssueWithTitle = (title: string): void => {
   // Get JavaScript logs and send them to native side before creating issue
   const jsLogs = LoggingService.getRecentLogs();
   ToadlyHybridObject.addJSLogs(jsLogs);
@@ -87,4 +87,4 @@ export function logError(error: Error, fatal: boolean = false): void {
 }
 
 // Export internal objects for use by ErrorHandlingService
-export { ToadlyHybridObject, _createIssueWithTitle };
+export { ToadlyHybridObject };

@@ -27,7 +27,6 @@ export function setup(
   repoOwner: string,
   repoName: string
 ): void {
-  LoggingService.addLog(`Setting up Toadly with GitHub integration`);
   return ToadlyHybridObject.setup(githubToken, repoOwner, repoName);
 }
 
@@ -71,7 +70,6 @@ export function enableAutomaticIssueSubmission(enable: boolean = true): void {
  */
 export function startNetworkMonitoring(): void {
   NetworkMonitoringService.getInstance().startMonitoring();
-  LoggingService.addLog('Network monitoring started');
 }
 
 /**
@@ -79,7 +77,6 @@ export function startNetworkMonitoring(): void {
  */
 export function stopNetworkMonitoring(): void {
   NetworkMonitoringService.getInstance().stopMonitoring();
-  LoggingService.addLog('Network monitoring stopped');
 }
 
 /**

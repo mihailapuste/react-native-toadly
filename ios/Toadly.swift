@@ -2,12 +2,19 @@ import UIKit
 import NitroModules
 
 class Toadly: HybridToadlySpec {
+    private static var hasSetupBeenCalled = false
+
     private let bugReportDialog = BugReportDialog()
     private var jsLogs: String = ""
     private var screenshotData: Data?
-    
+
     public func setup(githubToken: String, repoOwner: String, repoName: String) throws {
-        // TODO: Only call once
+        // Check the static flag.
+        if Toadly.hasSetupBeenCalled {
+            return
+        }
+        Toadly.hasSetupBeenCalled = true
+        
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
     }

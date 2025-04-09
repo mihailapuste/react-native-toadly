@@ -1,10 +1,6 @@
 import type { INetworkMonitoringService, NetworkRequest } from './interfaces';
 import { LoggingService } from './index';
 
-/**
- * NetworkMonitoringService captures all network requests made from the app
- * It works by intercepting fetch and XMLHttpRequest calls
- */
 class NetworkMonitoringService implements INetworkMonitoringService {
   private static instance: NetworkMonitoringService;
   private isMonitoringActive: boolean = false;
@@ -12,10 +8,9 @@ class NetworkMonitoringService implements INetworkMonitoringService {
   private originalFetch: typeof fetch;
   private originalXHROpen: any;
   private originalXHRSend: any;
-  private maxRequests: number = 50; // Store the last 50 requests by default
+  private maxRequests: number = 50; 
 
   private constructor() {
-    // Store original implementations
     this.originalFetch = global.fetch;
     if (typeof XMLHttpRequest !== 'undefined') {
       this.originalXHROpen = XMLHttpRequest.prototype.open;
@@ -23,9 +18,6 @@ class NetworkMonitoringService implements INetworkMonitoringService {
     }
   }
 
-  /**
-   * Get the singleton instance of NetworkMonitoringService
-   */
   public static getInstance(): NetworkMonitoringService {
     if (!NetworkMonitoringService.instance) {
       NetworkMonitoringService.instance = new NetworkMonitoringService();

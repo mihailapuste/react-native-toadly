@@ -16,10 +16,7 @@ import axios from 'axios';
 const { token, repoOwner, repoName } = config.github;
 Toadly.setup(token, repoOwner, repoName);
 
-// Enable automatic issue submission for JS errors
 Toadly.enableAutomaticIssueSubmission(true);
-
-// Enable network logging
 Toadly.startNetworkMonitoring();
 
 export default function App() {
@@ -67,10 +64,7 @@ export default function App() {
       // Manually log the caught error
       console.error('Caught error:', error);
       
-      // Log the error to Toadly
-      if (error instanceof Error) {
-        Toadly.logError(error, false);
-      }
+      
     }
   };
   
@@ -107,7 +101,6 @@ export default function App() {
       
       // Log the error to Toadly
       if (error instanceof Error) {
-        Toadly.logError(error, false);
         setApiError(error.message);
       }
     } finally {
@@ -132,7 +125,6 @@ export default function App() {
       
       // Log the error to Toadly
       if (error instanceof Error) {
-        Toadly.logError(error, false);
         setApiError(error.message);
       }
     } finally {

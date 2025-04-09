@@ -1,5 +1,5 @@
-import type { ConsoleOverrides } from './types';
-import type { IErrorHandlingService, ILoggingService } from './interfaces';
+import { LogTypes, type ConsoleOverrides } from './types';
+import type { ILoggingService } from './interfaces';
 
 /**
  * LoggingService manages log collection and console overrides
@@ -42,22 +42,22 @@ class LoggingService implements ILoggingService {
     this.isOverridden = true;
 
     console.log = (...args: any[]) => {
-      this.captureLog('LOG', ...args);
+      this.captureLog(LogTypes.LOG, ...args);
       this.originalConsole.log(...args);
     };
 
     console.info = (...args: any[]) => {
-      this.captureLog('INFO', ...args);
+      this.captureLog(LogTypes.INFO, ...args);
       this.originalConsole.info(...args);
     };
 
     console.warn = (...args: any[]) => {
-      this.captureLog('WARN', ...args);
+      this.captureLog(LogTypes.WARN, ...args);
       this.originalConsole.warn(...args);
     };
 
     console.error = (...args: any[]) => {
-      this.captureLog('ERROR', ...args);
+      this.captureLog(LogTypes.ERROR, ...args);
       this.originalConsole.error(...args);
     };
   }
@@ -94,39 +94,16 @@ class LoggingService implements ILoggingService {
     }
   }
 
-  /**
-   * Get all recent logs as a string
-   */
   public getRecentLogs(): string {
     return this.logs.join('\n');
   }
 
-  /**
-   * Add a custom log entry
-   */
   public addLog(message: string): void {
-    this.captureLog('TOADLY', message);
+    this.captureLog(LogTypes.TOADLY, message);
   }
 
-  /**
-   * Clear all stored logs
-   */
   public clearLogs(): void {
     this.logs = [];
-  }
-
-  /**
-   * Log an error with its stack trace
-   */
-  public logError(error: Error, fatal: boolean = false): void {
-    // Dynamically import ErrorHandlingService to avoid circular dependency
-    const errorHandlingService = require('./ErrorHandlingService').default as IErrorHandlingService;
-    
-    errorHandlingService.captureJSCrash(error, fatal);
-    
-    if (errorHandlingService.isAutomaticIssueSubmissionEnabled()) {
-      errorHandlingService.submitErrorAsGitHubIssue(error, fatal);
-    }
   }
 }
 

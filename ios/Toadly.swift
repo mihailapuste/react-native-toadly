@@ -7,6 +7,7 @@ class Toadly: HybridToadlySpec {
     private var screenshotData: Data?
     
     public func setup(githubToken: String, repoOwner: String, repoName: String) throws {
+        // TODO: Only call once
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
     }

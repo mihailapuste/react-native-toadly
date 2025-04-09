@@ -62,7 +62,7 @@ export default function App() {
       (obj as any).nonExistentMethod();
     } catch (error) {
       // Manually log the caught error
-      console.error('Caught error:', error);
+      console.error('Caught error:', (error as Error)?.message);
       
       
     }

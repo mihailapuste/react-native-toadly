@@ -1,12 +1,3 @@
-declare global {
-  interface Window {
-    ErrorUtils?: {
-      getGlobalHandler(): (error: Error, isFatal?: boolean) => void;
-      setGlobalHandler(callback: (error: Error, isFatal?: boolean) => void): void;
-    };
-  }
-}
-
 export interface ConsoleOverrides {
   log: typeof console.log;
   info: typeof console.info;

@@ -30,9 +30,8 @@ class ErrorHandlingService implements IErrorHandlingService {
     this.isErrorHandlingSetup = true;
     
     try {
-      // Dynamically require ErrorUtils from react-native
-      const ReactNative = require('react-native');
-      const ErrorUtils = ReactNative.ErrorUtils;
+      // @ts-ignore Access ErrorUtils directly from the global scope
+      const ErrorUtils = global.ErrorUtils;
       
       if (ErrorUtils) { 
         const defaultErrorHandler = ErrorUtils.getGlobalHandler();

@@ -5,9 +5,6 @@ class CrashUtil {
     static func triggerCrash() {
         LoggingService.info("Intentionally crashing the native iOS app")
         
-        // Notify the crash reporter that this is an intentional crash
-        CrashReporter.handleIntentionalCrash()
-        
         // Give a small delay to ensure the log is written before crashing
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             // Force an exception - this will crash the app

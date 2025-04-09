@@ -9,12 +9,11 @@ class Toadly: HybridToadlySpec {
     private var screenshotData: Data?
 
     public func setup(githubToken: String, repoOwner: String, repoName: String) throws {
-        // Check the static flag.
         if Toadly.hasSetupBeenCalled {
             return
         }
         Toadly.hasSetupBeenCalled = true
-        
+
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
     }

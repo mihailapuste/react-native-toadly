@@ -18,6 +18,7 @@ namespace margelo::nitro::toadly {
       prototype.registerHybridMethod("addJSLogs", &HybridToadlySpec::addJSLogs);
       prototype.registerHybridMethod("show", &HybridToadlySpec::show);
       prototype.registerHybridMethod("createIssueWithTitle", &HybridToadlySpec::createIssueWithTitle);
+      prototype.registerHybridMethod("crashNative", &HybridToadlySpec::crashNative);
     });
   }
 

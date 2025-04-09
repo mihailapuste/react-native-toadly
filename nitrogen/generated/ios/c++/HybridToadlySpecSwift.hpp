@@ -79,6 +79,12 @@ namespace margelo::nitro::toadly {
         std::rethrow_exception(__result.error());
       }
     }
+    inline void crashNative() override {
+      auto __result = _swiftPart.crashNative();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+    }
 
   private:
     Toadly::HybridToadlySpec_cxx _swiftPart;

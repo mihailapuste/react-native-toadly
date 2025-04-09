@@ -26,4 +26,10 @@ export interface Toadly
    * @param title The title for the GitHub issue
    */
   createIssueWithTitle(title: string): void;
+  
+  /**
+   * Intentionally crash the native iOS app for testing crash reporting
+   * This will cause an immediate app crash
+   */
+  crashNative(): void;
 }

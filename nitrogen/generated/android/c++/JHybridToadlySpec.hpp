@@ -55,6 +55,7 @@ namespace margelo::nitro::toadly {
     void addJSLogs(const std::string& logs) override;
     void show() override;
     void createIssueWithTitle(const std::string& title) override;
+    void crashNative() override;
 
   private:
     friend HybridBase;

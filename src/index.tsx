@@ -93,4 +93,12 @@ export function clearNetworkHistory(): void {
   NetworkMonitoringService.getInstance().clearRequests();
 }
 
+/**
+ * Intentionally crash the native iOS app for testing crash reporting
+ * This will cause an immediate app crash
+ */
+export function crashNative(): void {
+  return ToadlyHybridObject.crashNative();
+}
+
 export { ToadlyHybridObject };

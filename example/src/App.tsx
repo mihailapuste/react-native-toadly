@@ -132,6 +132,14 @@ export default function App() {
     }
   };
 
+  const handleNativeCrash = () => {
+    console.log('Triggering a native iOS crash...');
+    Toadly.log('User triggered a native iOS crash');
+    
+    // This will cause a native crash that should be reported on next app launch
+    Toadly.crashNative();
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -187,6 +195,13 @@ export default function App() {
             }}
           >
             <Text style={styles.clearButtonText}>Clear Logs</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.nativeCrashButton}
+            onPress={handleNativeCrash}
+          >
+            <Text style={styles.nativeCrashButtonText}>Trigger Native Crash</Text>
           </TouchableOpacity>
 
           <View style={styles.apiSection}>
@@ -325,6 +340,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   clearButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  nativeCrashButton: {
+    backgroundColor: '#FF69B4',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  nativeCrashButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',

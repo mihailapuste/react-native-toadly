@@ -55,6 +55,10 @@ abstract class HybridToadlySpec: HybridObject() {
   @DoNotStrip
   @Keep
   abstract fun createIssueWithTitle(title: String): Unit
+  
+  @DoNotStrip
+  @Keep
+  abstract fun crashNative(): Unit
 
   private external fun initHybrid(): HybridData
 

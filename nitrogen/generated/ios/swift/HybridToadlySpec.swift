@@ -18,6 +18,7 @@ public protocol HybridToadlySpec_protocol: HybridObject {
   func addJSLogs(logs: String) throws -> Void
   func show() throws -> Void
   func createIssueWithTitle(title: String) throws -> Void
+  func crashNative() throws -> Void
 }
 
 /// See ``HybridToadlySpec``

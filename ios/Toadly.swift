@@ -16,6 +16,9 @@ class Toadly: HybridToadlySpec {
 
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
+        
+        // Initialize the crash reporter
+        CrashReporter.setup()
     }
     
     public func addJSLogs(logs: String) throws {
@@ -126,5 +129,9 @@ class Toadly: HybridToadlySpec {
                 }
             )
         }
+    }
+    
+    public func crashNative() throws {
+        CrashUtil.triggerCrash()
     }
 }

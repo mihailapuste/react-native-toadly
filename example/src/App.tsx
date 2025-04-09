@@ -89,7 +89,7 @@ export default function App() {
       console.log('Making successful API call');
       Toadly.log('User initiated successful API call');
       
-      const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+      const response = await axios.get('https://fakerapi.it/api/v2/persons?_quantity=1&_gender=female&_birthday_start=2005-01-01');
       console.log('API response:', response.data);
       
       // Log the successful API call
@@ -118,7 +118,7 @@ export default function App() {
       Toadly.log('User initiated failed API call');
       
       // This URL doesn't exist, so it will fail
-      const response = await axios.get('https://jsonplaceholder.typicode.com/nonexistent');
+      const response = await axios.get('https://fakerapi.it/api/v2/dogs?_quantity=1&_gender=female&_birthday_start=2005-01-01');
       setApiResponse(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('API call failed (as expected):', error);

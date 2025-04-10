@@ -19,6 +19,7 @@ class GitHubService {
         details: String,
         jsLogs: String,
         screenshotData: Data? = nil,
+        crashInfo: [String: Any]? = nil,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
         guard let token = githubToken, let owner = repoOwner, let repo = repoName else {
@@ -28,8 +29,18 @@ class GitHubService {
         }
 
         if screenshotData == nil {
-            createGitHubIssue(email: email, title: title, details: details, jsLogs: jsLogs, 
-                             screenshotUrl: nil, token: token, owner: owner, repo: repo, completion: completion)
+            createGitHubIssue(
+                email: email, 
+                title: title, 
+                details: details, 
+                jsLogs: jsLogs, 
+                screenshotUrl: nil, 
+                crashInfo: crashInfo,
+                token: token, 
+                owner: owner, 
+                repo: repo, 
+                completion: completion
+            )
             return
         }
         
@@ -54,6 +65,7 @@ class GitHubService {
                 details: details,
                 jsLogs: jsLogs,
                 screenshotUrl: screenshotUrl,
+                crashInfo: crashInfo,
                 token: token,
                 owner: owner,
                 repo: repo,
@@ -68,6 +80,7 @@ class GitHubService {
         details: String,
         jsLogs: String,
         screenshotUrl: String?,
+        crashInfo: [String: Any]? = nil,
         token: String,
         owner: String,
         repo: String,
@@ -79,6 +92,7 @@ class GitHubService {
             details: details,
             jsLogs: jsLogs,
             screenshotUrl: screenshotUrl,
+            crashInfo: crashInfo,
             token: token,
             owner: owner,
             repo: repo,

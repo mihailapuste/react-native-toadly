@@ -7,6 +7,7 @@ class GitHubIssueCreator {
         details: String,
         jsLogs: String,
         screenshotUrl: String? = nil,
+        crashInfo: [String: Any]? = nil,
         token: String,
         owner: String,
         repo: String,
@@ -19,7 +20,8 @@ class GitHubIssueCreator {
             details: details,
             jsLogs: jsLogs,
             nativeLogs: nativeLogs,
-            screenshotUrl: screenshotUrl
+            screenshotUrl: screenshotUrl,
+            crashInfo: crashInfo
         )
         
         submitIssueToGitHub(

@@ -218,7 +218,12 @@ class CrashReporter {
             title: title,
             details: details,
             jsLogs: "",
-            screenshotData: nil
+            screenshotData: nil,
+            crashInfo: [
+                "crashType": title.replacingOccurrences(of: "Native Crash: ", with: ""),
+                "timestamp": Date().timeIntervalSince1970,
+                "details": details
+            ]
         ) { result in
             switch result {
             case .success(let issueUrl):

@@ -150,9 +150,7 @@ export default function App() {
           <Text style={styles.title}>Toadly</Text>
 
           <Text style={styles.description}>
-            This example demonstrates the Toadly bug reporting tool with automatic log collection.
-            When you tap the button below, the last 50 logs from both JavaScript and native code
-            will be included in your bug report.
+           TOADLY DEMO APP
           </Text>
 
           <TouchableOpacity

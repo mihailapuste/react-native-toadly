@@ -133,11 +133,6 @@ class BugReportController {
             }
         }
         
-        // Prefix with the report type if not already included
-        if !title.contains(reportType.rawValue) {
-            title = "\(reportType.rawValue): \(title)"
-        }
-        
         return title
     }
     

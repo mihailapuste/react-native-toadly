@@ -2,7 +2,7 @@ import UIKit
 
 class BugReportController {
     private var formView: BugReportFormView?
-    private var onSubmit: ((String, String, String) -> Void)?
+    private var onSubmit: ((String, String, String, BugReportType) -> Void)?
     private var onCancel: (() -> Void)?
     
     // Store the original center Y constraint for keyboard adjustments
@@ -10,7 +10,7 @@ class BugReportController {
     
     func show(
         from viewController: UIViewController,
-        onSubmit: @escaping (String, String, String) -> Void,
+        onSubmit: @escaping (String, String, String, BugReportType) -> Void,
         onCancel: @escaping () -> Void
     ) {
         self.onSubmit = onSubmit
@@ -23,8 +23,8 @@ class BugReportController {
             formView.alpha = 0
             
             // Set callbacks
-            formView.onSubmit = { [weak self] email, description in
-                self?.handleSubmit(email: email, description: description)
+            formView.onSubmit = { [weak self] email, reportType, description in
+                self?.handleSubmit(email: email, reportType: reportType, description: description)
             }
             
             formView.onDismiss = { [weak self] in
@@ -95,40 +95,50 @@ class BugReportController {
         }
     }
     
-    private func handleSubmit(email: String, description: String) {
+    private func handleSubmit(email: String, reportType: BugReportType, description: String) {
         // Generate a default title from the first line or first few words of the description
-        let title = generateTitleFromDescription(description)
+        let title = generateTitleFromDescription(description, reportType: reportType)
         
         // Call the completion handler
-        onSubmit?(email, title, description)
+        onSubmit?(email, title, description, reportType)
         
         // Dismiss the form
         dismissForm(animated: true)
     }
     
-    private func generateTitleFromDescription(_ description: String) -> String {
+    private func generateTitleFromDescription(_ description: String, reportType: BugReportType) -> String {
         // Use the first line if it exists and isn't too long
         let firstLine = description.split(separator: "\n").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if !firstLine.isEmpty && firstLine.count <= 50 {
-            return firstLine
-        }
-        
-        // Otherwise use the first few words (up to 50 characters)
-        let words = description.split(separator: " ")
         var title = ""
         
-        for word in words {
-            if (title + " " + word).count <= 50 {
-                if !title.isEmpty {
-                    title += " "
+        if !firstLine.isEmpty && firstLine.count <= 50 {
+            title = firstLine
+        } else {
+            // Otherwise use the first few words (up to 50 characters)
+            let words = description.split(separator: " ")
+            
+            for word in words {
+                if (title + " " + word).count <= 50 {
+                    if !title.isEmpty {
+                        title += " "
+                    }
+                    title += word
+                } else {
+                    break
                 }
-                title += word
-            } else {
-                break
+            }
+            
+            if title.isEmpty {
+                title = reportType.rawValue
             }
         }
         
-        return title.isEmpty ? "Bug Report" : title
+        // Prefix with the report type if not already included
+        if !title.contains(reportType.rawValue) {
+            title = "\(reportType.rawValue): \(title)"
+        }
+        
+        return title
     }
     
     func dismissForm(animated: Bool) {

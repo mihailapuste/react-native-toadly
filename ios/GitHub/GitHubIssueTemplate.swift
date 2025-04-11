@@ -8,7 +8,8 @@ public struct GitHubIssueTemplate {
         jsLogs: String,
         nativeLogs: String,
         screenshotUrl: String? = nil,
-        crashInfo: [String: Any]? = nil
+        crashInfo: [String: Any]? = nil,
+        reportType: String? = nil
     ) -> String {
         // Get device and app information
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
@@ -70,15 +71,24 @@ public struct GitHubIssueTemplate {
         let freeSpaceString = freeSpace != nil ? memoryFormatter.string(fromByteCount: freeSpace!.int64Value) : "Unknown"
         let totalSpaceString = totalSpace != nil ? memoryFormatter.string(fromByteCount: totalSpace!.int64Value) : "Unknown"
         
+        // Get report type information
+        let reportTypeText = reportType ?? "Bug"
+        let reportTypeIcon = getIconForReportType(reportType)
+        
         var issueBody = """
         ### Description
         \(details)
         
+        ### Report Information
+        | Property | Value |
+        | ----- | ----- |
+        | Report Type | \(reportTypeIcon) \(reportTypeText) |
+        | Email | \(email) |
+        | Timestamp | \(dateString) |
+        
         ### Device & App Information
         | Property | Value |
         | ----- | ----- |
-        | Email | \(email) |
-        | Timestamp | \(dateString) |
         | App Version | \(appVersion) (\(buildNumber)) |
         | Device Model | \(deviceModel) |
         | Device Name | \(deviceName) |
@@ -142,5 +152,20 @@ public struct GitHubIssueTemplate {
         }
         
         return issueBody
+    }
+    
+    private static func getIconForReportType(_ reportType: String?) -> String {
+        guard let reportType = reportType else { return "🐛" }
+        
+        switch reportType.lowercased() {
+        case "bug":
+            return "🐛"
+        case "suggestion":
+            return "💡"
+        case "question":
+            return "❓"
+        default:
+            return "🐛"
+        }
     }
 }

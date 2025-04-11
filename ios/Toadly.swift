@@ -101,31 +101,33 @@ class Toadly: HybridToadlySpec {
 
             self.bugReportController.show(
                 from: rootViewController,
-                onSubmit: { [weak self] email, title, details in
+                onSubmit: { [weak self] email, title, details, reportType in
                     guard let self = self else { return }
                     
-                    LoggingService.info("Bug report submitted with title: \(title)")
+                    LoggingService.info("Report submitted with type: \(reportType.rawValue), title: \(title)")
                     
                     GitHubService.submitIssue(
                         email: email,
                         title: title,
                         details: details,
                         jsLogs: self.jsLogs,
-                        screenshotData: self.screenshotData
-                    ) { result in
-                        switch result {
-                        case .success(let issueUrl):
-                            LoggingService.info("Bug Report Submitted to GitHub: \(issueUrl)")
-                            print("Bug Report Submitted to GitHub: \(issueUrl)")
-                        case .failure(let error):
-                            LoggingService.error("Failed to submit bug report to GitHub: \(error.localizedDescription)")
-                            print("Failed to submit bug report to GitHub: \(error.localizedDescription)")
+                        screenshotData: self.screenshotData,
+                        reportType: reportType.rawValue,
+                        completion: { result in
+                            switch result {
+                            case .success(let issueUrl):
+                                LoggingService.info("Report Submitted to GitHub: \(issueUrl)")
+                                print("Report Submitted to GitHub: \(issueUrl)")
+                            case .failure(let error):
+                                LoggingService.error("Failed to submit report to GitHub: \(error.localizedDescription)")
+                                print("Failed to submit report to GitHub: \(error.localizedDescription)")
+                            }
                         }
-                    }
+                    )
                 },
                 onCancel: {
-                    LoggingService.info("Bug report cancelled")
-                    print("Bug report cancelled")
+                    LoggingService.info("Report submission cancelled")
+                    print("Report submission cancelled")
                 }
             )
         }

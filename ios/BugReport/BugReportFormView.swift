@@ -4,11 +4,15 @@ class BugReportFormView: UIView {
     // UI Components
     private let containerView = UIView()
     private let emailTextField = UITextField()
+    private let reportTypeButton = UIButton(type: .system)
     private let descriptionTextView = UITextView()
     private let submitButton = UIButton(type: .system)
     
+    // State
+    private var selectedReportType: BugReportType = .bug
+    
     // Callbacks
-    var onSubmit: ((String, String) -> Void)?
+    var onSubmit: ((String, BugReportType, String) -> Void)?
     var onDismiss: (() -> Void)?
     var onKeyboardWillShow: ((CGRect) -> Void)?
     var onKeyboardWillHide: (() -> Void)?
@@ -53,6 +57,52 @@ class BugReportFormView: UIView {
         emailTextField.delegate = self
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(emailTextField)
+        
+        // Setup report type button
+        reportTypeButton.setTitle(selectedReportType.displayText, for: .normal)
+        reportTypeButton.contentHorizontalAlignment = .left
+        reportTypeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        reportTypeButton.layer.borderWidth = 0.5
+        reportTypeButton.layer.borderColor = UIColor.lightGray.cgColor
+        reportTypeButton.layer.cornerRadius = 5
+        reportTypeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        reportTypeButton.setTitleColor(.black, for: .normal)
+        reportTypeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Setup the dropdown menu
+        let bugAction = UIAction(title: BugReportType.bug.displayText, image: nil, handler: { [weak self] _ in
+            self?.selectedReportType = .bug
+            self?.reportTypeButton.setTitle(BugReportType.bug.displayText, for: .normal)
+        })
+        
+        let suggestionAction = UIAction(title: BugReportType.suggestion.displayText, image: nil, handler: { [weak self] _ in
+            self?.selectedReportType = .suggestion
+            self?.reportTypeButton.setTitle(BugReportType.suggestion.displayText, for: .normal)
+        })
+        
+        let questionAction = UIAction(title: BugReportType.question.displayText, image: nil, handler: { [weak self] _ in
+            self?.selectedReportType = .question
+            self?.reportTypeButton.setTitle(BugReportType.question.displayText, for: .normal)
+        })
+        
+        let menu = UIMenu(title: "", options: .displayInline, children: [bugAction, suggestionAction, questionAction])
+        reportTypeButton.menu = menu
+        reportTypeButton.showsMenuAsPrimaryAction = true
+        
+        containerView.addSubview(reportTypeButton)
+        
+        // Add dropdown indicator to report type button
+        let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right"))
+        chevronImageView.tintColor = .gray
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+        reportTypeButton.addSubview(chevronImageView)
+        
+        NSLayoutConstraint.activate([
+            chevronImageView.trailingAnchor.constraint(equalTo: reportTypeButton.trailingAnchor, constant: -10),
+            chevronImageView.centerYAnchor.constraint(equalTo: reportTypeButton.centerYAnchor),
+            chevronImageView.widthAnchor.constraint(equalToConstant: 12),
+            chevronImageView.heightAnchor.constraint(equalToConstant: 20)
+        ])
         
         // Setup description text view
         descriptionTextView.layer.borderWidth = 0.5
@@ -100,8 +150,14 @@ class BugReportFormView: UIView {
             emailTextField.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             emailTextField.heightAnchor.constraint(equalToConstant: 44),
             
+            // Report type button constraints
+            reportTypeButton.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16),
+            reportTypeButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            reportTypeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            reportTypeButton.heightAnchor.constraint(equalToConstant: 44),
+            
             // Description text view constraints
-            descriptionTextView.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16),
+            descriptionTextView.topAnchor.constraint(equalTo: reportTypeButton.bottomAnchor, constant: 16),
             descriptionTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             descriptionTextView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 200),
@@ -139,7 +195,7 @@ class BugReportFormView: UIView {
         }
     }
     
-    @objc private func keyboardWillHide(notification: NSNotification) {
+    @objc private func keyboardWillHide(_ notification: Notification) {
         onKeyboardWillHide?()
     }
     
@@ -166,7 +222,7 @@ class BugReportFormView: UIView {
             return
         }
         
-        onSubmit?(email, description)
+        onSubmit?(email, selectedReportType, description)
     }
     
     @objc private func dismissKeyboard() {
@@ -178,6 +234,18 @@ class BugReportFormView: UIView {
         if !containerView.frame.contains(location) {
             onDismiss?()
         }
+    }
+    
+    // Helper to find the view controller that contains this view
+    private func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            if let viewController = nextResponder as? UIViewController {
+                return viewController
+            }
+            responder = nextResponder
+        }
+        return nil
     }
 }
 

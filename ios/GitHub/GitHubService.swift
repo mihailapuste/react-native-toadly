@@ -20,6 +20,7 @@ class GitHubService {
         jsLogs: String,
         screenshotData: Data? = nil,
         crashInfo: [String: Any]? = nil,
+        reportType: String? = nil,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
         guard let token = githubToken, let owner = repoOwner, let repo = repoName else {
@@ -36,6 +37,7 @@ class GitHubService {
                 jsLogs: jsLogs, 
                 screenshotUrl: nil, 
                 crashInfo: crashInfo,
+                reportType: reportType,
                 token: token, 
                 owner: owner, 
                 repo: repo, 
@@ -66,6 +68,7 @@ class GitHubService {
                 jsLogs: jsLogs,
                 screenshotUrl: screenshotUrl,
                 crashInfo: crashInfo,
+                reportType: reportType,
                 token: token,
                 owner: owner,
                 repo: repo,
@@ -81,6 +84,7 @@ class GitHubService {
         jsLogs: String,
         screenshotUrl: String?,
         crashInfo: [String: Any]? = nil,
+        reportType: String? = nil,
         token: String,
         owner: String,
         repo: String,
@@ -93,6 +97,7 @@ class GitHubService {
             jsLogs: jsLogs,
             screenshotUrl: screenshotUrl,
             crashInfo: crashInfo,
+            reportType: reportType,
             token: token,
             owner: owner,
             repo: repo,

@@ -81,10 +81,11 @@ class LoggingService implements ILoggingService {
         })
         .join(' ');
 
-      const formattedLevel = level === LogTypes.TOADLY ? LogTypes.TOADLY : `[${level}]`;
-      
+      const formattedLevel =
+        level === LogTypes.TOADLY ? LogTypes.TOADLY : `[${level}]`;
+
       const logEntry = `[${timestamp}] ${formattedLevel} ${message}`;
-      
+
       this.logs.push(logEntry);
 
       if (this.logs.length > this.maxLogs) {

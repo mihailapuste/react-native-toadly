@@ -1,6 +1,10 @@
 import { NitroModules } from 'react-native-nitro-modules';
 import type { Toadly } from './Toadly.nitro';
-import { LoggingService, ErrorHandlingService, NetworkMonitoringService } from './services';
+import {
+  LoggingService,
+  ErrorHandlingService,
+  NetworkMonitoringService,
+} from './services';
 
 const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
 
@@ -23,11 +27,11 @@ export function setup(
  */
 export function show(): void {
   LoggingService.addLog('Showing bug report dialog');
-  
+
   // Get JavaScript logs and send them to native side before showing dialog
   const jsLogs = LoggingService.getRecentLogs();
   ToadlyHybridObject.addJSLogs(jsLogs);
-  
+
   return ToadlyHybridObject.show();
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -23,22 +23,22 @@ export default function App() {
   const [apiResponse, setApiResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  
+
   useEffect(() => {
     console.log('App initialized');
     console.info('Environment loaded successfully');
-    
+
     Toadly.log('App component mounted');
-    
+
     const logExamples = () => {
       console.log('User interaction occurred');
       console.info('Data fetched successfully');
-      
+
       Toadly.log('Custom business logic executed');
     };
-    
+
     logExamples();
-    
+
     return () => {
       Toadly.log('App component will unmount');
     };
@@ -49,13 +49,13 @@ export default function App() {
     Toadly.log('Bug report requested by user');
     Toadly.show();
   };
-  
+
   const handleTriggerError = () => {
     try {
       // Simulate an error
       console.log('Attempting to trigger an error...');
       Toadly.log('User triggered a sample error');
-      
+
       // This will cause an error - using type assertion to silence TypeScript error
       // @ts-ignore - This is intentionally causing an error for demonstration
       const obj = null;
@@ -63,15 +63,13 @@ export default function App() {
     } catch (error) {
       // Manually log the caught error
       console.error('Caught error:', (error as Error)?.message);
-      
-      
     }
   };
-  
+
   const handleTriggerFatalError = () => {
     console.log('Triggering a fatal error...');
     Toadly.log('User triggered a fatal error');
-    
+
     // This will cause an uncaught error that will be automatically reported
     setTimeout(() => {
       // @ts-ignore - This is intentionally causing an error for demonstration
@@ -84,21 +82,23 @@ export default function App() {
     setIsLoading(true);
     setApiResponse('');
     setApiError('');
-    
+
     try {
       console.log('Making successful API call');
       Toadly.log('User initiated successful API call');
-      
-      const response = await axios.get('https://fakerapi.it/api/v2/persons?_quantity=1&_gender=female&_birthday_start=2005-01-01');
+
+      const response = await axios.get(
+        'https://fakerapi.it/api/v2/persons?_quantity=1&_gender=female&_birthday_start=2005-01-01'
+      );
       console.log('API response:', response.data);
-      
+
       // Log the successful API call
       Toadly.log(`API call successful: ${JSON.stringify(response.data)}`);
-      
+
       setApiResponse(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('API call failed:', error);
-      
+
       // Log the error to Toadly
       if (error instanceof Error) {
         setApiError(error.message);
@@ -112,17 +112,19 @@ export default function App() {
     setIsLoading(true);
     setApiResponse('');
     setApiError('');
-    
+
     try {
       console.log('Making failed API call');
       Toadly.log('User initiated failed API call');
-      
+
       // This URL doesn't exist, so it will fail
-      const response = await axios.get('https://fakerapi.it/api/v2/dogs?_quantity=1&_gender=female&_birthday_start=2005-01-01');
+      const response = await axios.get(
+        'https://fakerapi.it/api/v2/dogs?_quantity=1&_gender=female&_birthday_start=2005-01-01'
+      );
       setApiResponse(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('API call failed (as expected):', error);
-      
+
       // Log the error to Toadly
       if (error instanceof Error) {
         setApiError(error.message);
@@ -135,7 +137,7 @@ export default function App() {
   const handleNativeCrash = () => {
     console.log('Triggering a native iOS crash...');
     Toadly.log('User triggered a native iOS crash');
-    
+
     // This will cause a native crash that should be reported on next app launch
     Toadly.crashNative();
   };
@@ -149,9 +151,7 @@ export default function App() {
         <View style={styles.calculatorContainer}>
           <Text style={styles.title}>Toadly</Text>
 
-          <Text style={styles.description}>
-           TOADLY DEMO APP
-          </Text>
+          <Text style={styles.description}>TOADLY DEMO APP</Text>
 
           <TouchableOpacity
             style={styles.reportButton}
@@ -159,7 +159,7 @@ export default function App() {
           >
             <Text style={styles.reportButtonText}>Report a Bug</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.logButton}
             onPress={() => {
@@ -169,21 +169,21 @@ export default function App() {
           >
             <Text style={styles.logButtonText}>Add Log Entry</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.errorButton}
             onPress={handleTriggerError}
           >
             <Text style={styles.errorButtonText}>Trigger Caught Error</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.fatalButton}
             onPress={handleTriggerFatalError}
           >
             <Text style={styles.fatalButtonText}>Trigger Fatal Error</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.clearButton}
             onPress={() => {
@@ -199,40 +199,44 @@ export default function App() {
             style={styles.nativeCrashButton}
             onPress={handleNativeCrash}
           >
-            <Text style={styles.nativeCrashButtonText}>Trigger Native Crash</Text>
+            <Text style={styles.nativeCrashButtonText}>
+              Trigger Native Crash
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.apiSection}>
             <Text style={styles.sectionTitle}>API Testing</Text>
-            
+
             <TouchableOpacity
               style={styles.successButton}
               onPress={makeSuccessfulApiCall}
             >
-              <Text style={styles.successButtonText}>Make Successful API Call</Text>
+              <Text style={styles.successButtonText}>
+                Make Successful API Call
+              </Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={styles.failButton}
               onPress={makeFailedApiCall}
             >
               <Text style={styles.failButtonText}>Make Failed API Call</Text>
             </TouchableOpacity>
-            
+
             {isLoading && (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#4682B4" />
                 <Text style={styles.loadingText}>Loading...</Text>
               </View>
             )}
-            
+
             {apiResponse !== '' && (
               <View style={styles.responseContainer}>
                 <Text style={styles.responseTitle}>API Response:</Text>
                 <Text style={styles.responseText}>{apiResponse}</Text>
               </View>
             )}
-            
+
             {apiError !== '' && (
               <View style={styles.errorContainer}>
                 <Text style={styles.errorTitle}>API Error:</Text>

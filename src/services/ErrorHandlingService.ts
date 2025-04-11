@@ -28,22 +28,22 @@ class ErrorHandlingService implements IErrorHandlingService {
     }
 
     this.isErrorHandlingSetup = true;
-    
+
     try {
       // @ts-ignore Access ErrorUtils directly from the global scope
       const ErrorUtils = global.ErrorUtils;
-      
-      if (ErrorUtils) { 
+
+      if (ErrorUtils) {
         const defaultErrorHandler = ErrorUtils.getGlobalHandler();
-        
+
         // Override the global error handler
         ErrorUtils.setGlobalHandler((error: Error, isFatal?: boolean) => {
           this.captureJSCrash(error, isFatal);
-          
+
           if (this.autoSubmitIssues && isFatal) {
             this.createIssue(error, isFatal);
           }
-          
+
           // Call the default handler afterwards
           defaultErrorHandler(error, isFatal);
         });
@@ -59,16 +59,20 @@ class ErrorHandlingService implements IErrorHandlingService {
   public captureJSCrash(error: Error, isFatal: boolean = false): void {
     try {
       const timestamp = new Date().toISOString();
-      const errorType = isFatal ? ErrorTypes.FATAL_CRASH : ErrorTypes.NON_FATAL_ERROR;
-      
+      const errorType = isFatal
+        ? ErrorTypes.FATAL_CRASH
+        : ErrorTypes.NON_FATAL_ERROR;
+
       const errorMessage = error.message || `${error}`;
       const stackTrace = error.stack || '';
-      
+
       const crashLog = [
         `[${timestamp}] [${errorType}] ${errorMessage}`,
-        stackTrace ? `Stack trace:\n${stackTrace}` : ''
-      ].filter(Boolean).join('\n');
-      
+        stackTrace ? `Stack trace:\n${stackTrace}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+
       LoggingService.addLog(crashLog);
     } catch (captureError) {
       console.error('Error capturing JS crash:', captureError);
@@ -77,14 +81,16 @@ class ErrorHandlingService implements IErrorHandlingService {
 
   public createIssue(error: Error, isFatal: boolean = false): void {
     try {
-      const errorType = isFatal ? ErrorTypes.FATAL_CRASH : ErrorTypes.NON_FATAL_ERROR;
+      const errorType = isFatal
+        ? ErrorTypes.FATAL_CRASH
+        : ErrorTypes.NON_FATAL_ERROR;
       const title = `[${errorType}] ${error.message.substring(0, 100)}`;
-      
+
       // Delay to ensure all logs are captured
       setTimeout(() => {
         const jsLogs = LoggingService.getRecentLogs();
         ToadlyHybridObject.addJSLogs(jsLogs);
-        
+
         ToadlyHybridObject.createIssueWithTitle(title, 'crash');
       }, 100);
     } catch (submitError) {

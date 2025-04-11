@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..');
 module.exports = getConfig(
   {
     presets: ['module:@react-native/babel-preset'],
-    plugins: []
+    plugins: [],
   },
   { root, pkg }
 );

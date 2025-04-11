@@ -7,7 +7,7 @@ export interface ConsoleOverrides {
 
 export enum ErrorTypes {
   FATAL_CRASH = 'FATAL CRASH',
-  NON_FATAL_ERROR = 'NON-FATAL ERROR'
+  NON_FATAL_ERROR = 'NON-FATAL ERROR',
 }
 
 export enum LogTypes {
@@ -15,5 +15,5 @@ export enum LogTypes {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
-  TOADLY = '🐸'
+  TOADLY = '🐸',
 }

@@ -15,6 +15,7 @@ namespace Toadly { class HybridToadlySpec_cxx; }
 
 
 #include <string>
+#include <optional>
 
 #include "Toadly-Swift-Cxx-Umbrella.hpp"
 
@@ -73,8 +74,8 @@ namespace margelo::nitro::toadly {
         std::rethrow_exception(__result.error());
       }
     }
-    inline void createIssueWithTitle(const std::string& title) override {
-      auto __result = _swiftPart.createIssueWithTitle(title);
+    inline void createIssueWithTitle(const std::string& title, const std::optional<std::string>& reportType) override {
+      auto __result = _swiftPart.createIssueWithTitle(title, reportType);
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

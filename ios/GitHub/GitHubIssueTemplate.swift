@@ -162,6 +162,8 @@ public struct GitHubIssueTemplate {
             return "🐛"
         case "suggestion":
             return "💡"
+        case "crash":
+            return "🚨"
         case "question":
             return "❓"
         default:

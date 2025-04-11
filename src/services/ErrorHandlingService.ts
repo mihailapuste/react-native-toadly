@@ -85,7 +85,7 @@ class ErrorHandlingService implements IErrorHandlingService {
         const jsLogs = LoggingService.getRecentLogs();
         ToadlyHybridObject.addJSLogs(jsLogs);
         
-        ToadlyHybridObject.createIssueWithTitle(title);
+        ToadlyHybridObject.createIssueWithTitle(title, 'crash');
       }, 100);
     } catch (submitError) {
       console.error('Error submitting GitHub issue:', submitError);

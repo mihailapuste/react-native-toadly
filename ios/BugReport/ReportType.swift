@@ -4,6 +4,7 @@ public enum BugReportType: String, CaseIterable {
     case bug = "Bug"
     case suggestion = "Suggestion"
     case question = "Question"
+    case crash = "Crash"
     
     public var icon: String {
         switch self {
@@ -11,6 +12,8 @@ public enum BugReportType: String, CaseIterable {
             return "🐞"
         case .suggestion:
             return "💡"
+        case .crash:
+            return "🚨"
         case .question:
             return "❓"
         }

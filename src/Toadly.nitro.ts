@@ -24,8 +24,9 @@ export interface Toadly
   /**
    * Create and submit a GitHub issue with a custom title
    * @param title The title for the GitHub issue
+   * @param reportType Optional report type (bug, crash, suggestion, question)
    */
-  createIssueWithTitle(title: string): void;
+  createIssueWithTitle(title: string, reportType?: string): void;
   
   /**
    * Intentionally crash the native iOS app for testing crash reporting

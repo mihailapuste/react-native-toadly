@@ -5,18 +5,6 @@ import { LoggingService, ErrorHandlingService, NetworkMonitoringService } from '
 const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
 
 /**
- * Internal function to create and submit a GitHub issue with a custom title
- * Not exposed in the public API - used internally by error handling
- * @param title The title for the GitHub issue
- */
-export const _createIssueWithTitle = (title: string): void => {
-  const jsLogs = LoggingService.getRecentLogs();
-  ToadlyHybridObject.addJSLogs(jsLogs);
-  
-  return ToadlyHybridObject.createIssueWithTitle(title);
-};
-
-/**
  * Setup the Toadly module with GitHub configuration
  * @param githubToken GitHub access token from environment variables
  * @param repoOwner Repository owner (username or organization)

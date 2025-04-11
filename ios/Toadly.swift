@@ -16,9 +16,6 @@ class Toadly: HybridToadlySpec {
 
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
-        
-        // Initialize the crash reporter
-        CrashReporter.setup()
     }
     
     public func addJSLogs(logs: String) throws {
@@ -26,7 +23,7 @@ class Toadly: HybridToadlySpec {
         LoggingService.info("Received JavaScript logs")
     }
     
-    public func createIssueWithTitle(title: String) throws {
+    public func createIssueWithTitle(title: String, reportType: String?) throws {
         LoggingService.info("Creating GitHub issue with title: \(title)")
         
         DispatchQueue.main.async { [weak self] in
@@ -39,7 +36,8 @@ class Toadly: HybridToadlySpec {
                 title: title,
                 details: details,
                 jsLogs: self.jsLogs,
-                screenshotData: nil
+                screenshotData: nil,
+                reportType: reportType
             ) { result in
                 switch result {
                 case .success(let issueUrl):

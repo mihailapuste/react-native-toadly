@@ -16,6 +16,7 @@
 
 
 #include <string>
+#include <optional>
 
 namespace margelo::nitro::toadly {
 
@@ -51,7 +52,7 @@ namespace margelo::nitro::toadly {
       virtual void setup(const std::string& githubToken, const std::string& repoOwner, const std::string& repoName) = 0;
       virtual void addJSLogs(const std::string& logs) = 0;
       virtual void show() = 0;
-      virtual void createIssueWithTitle(const std::string& title) = 0;
+      virtual void createIssueWithTitle(const std::string& title, const std::optional<std::string>& reportType) = 0;
       virtual void crashNative() = 0;
 
     protected:

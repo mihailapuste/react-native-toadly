@@ -15,5 +15,5 @@ export enum LogTypes {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
-  TOADLY = 'TOADLY'
+  TOADLY = '🐸'
 }

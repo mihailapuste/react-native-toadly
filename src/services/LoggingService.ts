@@ -65,7 +65,7 @@ class LoggingService implements ILoggingService {
   /**
    * Capture a log entry with timestamp and level
    */
-  private captureLog(level: string, ...args: any[]): void {
+  private captureLog(level: LogTypes, ...args: any[]): void {
     try {
       const timestamp = new Date().toISOString();
       const message = args
@@ -81,7 +81,9 @@ class LoggingService implements ILoggingService {
         })
         .join(' ');
 
-      const logEntry = `[${timestamp}] [${level}] ${message}`;
+      const formattedLevel = level === LogTypes.TOADLY ? LogTypes.TOADLY : `[${level}]`;
+      
+      const logEntry = `[${timestamp}] ${formattedLevel} ${message}`;
       
       this.logs.push(logEntry);
 

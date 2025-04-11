@@ -3,10 +3,12 @@ import UIKit
 class BugReportFormView: UIView {
     // UI Components
     private let containerView = UIView()
+    private let headerView = UIView()
+    private let closeButton = UIButton(type: .system)
+    private let submitButton = UIButton(type: .system)
     private let emailTextField = UITextField()
     private let reportTypeButton = UIButton(type: .system)
     private let descriptionTextView = UITextView()
-    private let submitButton = UIButton(type: .system)
     
     // State
     private var selectedReportType: BugReportType = .bug
@@ -53,8 +55,32 @@ class BugReportFormView: UIView {
         // Setup container view
         containerView.backgroundColor = .white
         containerView.layer.cornerRadius = 12
+        containerView.clipsToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)
+        
+        // Setup header view
+        headerView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0) // Light gray background
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // We don't need to set corner radius on the header view since the container view handles clipping
+        containerView.addSubview(headerView)
+        
+        // Setup close button
+        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        closeButton.tintColor = .darkGray
+        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(closeButton)
+        
+        // Setup submit button (circular)
+        submitButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
+        submitButton.tintColor = .systemBlue
+        submitButton.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 1.0, alpha: 1.0) // Light blue background
+        submitButton.layer.cornerRadius = 20 // Make it circular
+        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
+        submitButton.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(submitButton)
         
         // Setup email text field
         emailTextField.placeholder = "Email"
@@ -100,19 +126,6 @@ class BugReportFormView: UIView {
         
         containerView.addSubview(reportTypeButton)
         
-        // Add dropdown indicator to report type button
-        let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImageView.tintColor = .gray
-        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
-        reportTypeButton.addSubview(chevronImageView)
-        
-        NSLayoutConstraint.activate([
-            chevronImageView.trailingAnchor.constraint(equalTo: reportTypeButton.trailingAnchor, constant: -10),
-            chevronImageView.centerYAnchor.constraint(equalTo: reportTypeButton.centerYAnchor),
-            chevronImageView.widthAnchor.constraint(equalToConstant: 12),
-            chevronImageView.heightAnchor.constraint(equalToConstant: 20)
-        ])
-        
         // Setup description text view
         descriptionTextView.layer.borderWidth = 0.5
         descriptionTextView.layer.borderColor = UIColor.lightGray.cgColor
@@ -124,18 +137,9 @@ class BugReportFormView: UIView {
         descriptionTextView.delegate = self
         containerView.addSubview(descriptionTextView)
         
-        // Setup submit button
-        submitButton.setTitle("Submit", for: .normal)
-        submitButton.backgroundColor = UIColor(red: 0.2, green: 0.8, blue: 0.4, alpha: 1.0) // Green color
-        submitButton.setTitleColor(.white, for: .normal)
-        submitButton.layer.cornerRadius = 8
-        submitButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
-        containerView.addSubview(submitButton)
-        
         // Add tap gesture to dismiss keyboard
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
         addGestureRecognizer(tapGesture)
         
         // Add tap gesture to dismiss the form when tapping outside
@@ -151,32 +155,44 @@ class BugReportFormView: UIView {
             // Container view constraints
             containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            containerView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.85),
+            containerView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9), // Increased from fixed 350 to 90% of parent width
+            
+            // Header view constraints
+            headerView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: 50),
+            
+            // Close button constraints
+            closeButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 12), // Reduced from 16
+            closeButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            closeButton.widthAnchor.constraint(equalToConstant: 30),
+            closeButton.heightAnchor.constraint(equalToConstant: 30),
+            
+            // Submit button constraints
+            submitButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -12), // Reduced from 16
+            submitButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            submitButton.widthAnchor.constraint(equalToConstant: 40),
+            submitButton.heightAnchor.constraint(equalToConstant: 40),
             
             // Email text field constraints
-            emailTextField.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 24),
-            emailTextField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            emailTextField.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            emailTextField.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 16),
+            emailTextField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12), // Reduced from 16
+            emailTextField.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12), // Reduced from 16
             emailTextField.heightAnchor.constraint(equalToConstant: 44),
             
             // Report type button constraints
             reportTypeButton.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16),
-            reportTypeButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            reportTypeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            reportTypeButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12), // Reduced from 16
+            reportTypeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12), // Reduced from 16
             reportTypeButton.heightAnchor.constraint(equalToConstant: 44),
             
             // Description text view constraints
             descriptionTextView.topAnchor.constraint(equalTo: reportTypeButton.bottomAnchor, constant: 16),
-            descriptionTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            descriptionTextView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            descriptionTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12), // Reduced from 16
+            descriptionTextView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12), // Reduced from 16
             descriptionTextView.heightAnchor.constraint(equalToConstant: 200),
-            
-            // Submit button constraints
-            submitButton.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 24),
-            submitButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            submitButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            submitButton.heightAnchor.constraint(equalToConstant: 50),
-            submitButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -24)
+            descriptionTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16)
         ])
     }
     
@@ -232,6 +248,10 @@ class BugReportFormView: UIView {
         }
         
         onSubmit?(email, selectedReportType, description)
+    }
+    
+    @objc private func closeButtonTapped() {
+        onDismiss?()
     }
     
     @objc private func dismissKeyboard() {

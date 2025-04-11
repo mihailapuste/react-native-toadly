@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as Toadly from 'react-native-toadly';
-import { config } from '../config';
 import axios from 'axios';
+import { config } from '../config';
 
 const { token, repoOwner, repoName } = config.github;
 Toadly.setup(token, repoOwner, repoName);

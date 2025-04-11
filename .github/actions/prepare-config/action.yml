@@ -1,0 +1,16 @@
+name: Prepare Config
+description: Prepare configuration files for CI
+
+runs:
+  using: composite
+  steps:
+    - name: Create config file for example app
+      run: |
+        # Copy the example config to the actual config file
+        if [ -f example/config.example.ts ]; then
+          echo "Creating config.ts from config.example.ts for CI"
+          cp example/config.example.ts example/config.ts
+        else
+          echo "Warning: example/config.example.ts not found"
+        fi
+      shell: bash

@@ -1,4 +1,5 @@
-  <img src="https://github.com/user-attachments/assets/0c6825a4-ad3d-4b50-964e-f05f86507b4a" alt="Screenshot" height="300">
+<img src="https://github.com/user-attachments/assets/52d29b6b-c638-4963-bc1b-ac62bf5ee820" alt="Screenshot" height="200">
+
 
 
 # Toadly for React Native

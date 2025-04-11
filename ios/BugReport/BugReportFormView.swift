@@ -6,6 +6,7 @@ class BugReportFormView: UIView {
     private let headerView = UIView()
     private let closeButton = UIButton(type: .system)
     private let submitButton = UIButton(type: .system)
+    private let titleLabel = UILabel()
     private let emailTextField = UITextField()
     private let reportTypeButton = UIButton(type: .system)
     private let descriptionTextView = UITextView()
@@ -73,6 +74,13 @@ class BugReportFormView: UIView {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(closeButton)
         
+        // Setup title label
+        titleLabel.text = "Need help?"
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        titleLabel.textAlignment = .center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(titleLabel)
+        
         // Setup submit button (circular)
         submitButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
         submitButton.tintColor = .systemBlue
@@ -103,6 +111,22 @@ class BugReportFormView: UIView {
         reportTypeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         reportTypeButton.setTitleColor(.black, for: .normal)
         reportTypeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add right chevron image to report type button
+        let chevronImage = UIImage(systemName: "chevron.right")
+        let chevronImageView = UIImageView(image: chevronImage)
+        chevronImageView.tintColor = .darkGray
+        chevronImageView.contentMode = .scaleAspectFit
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+        reportTypeButton.addSubview(chevronImageView)
+        
+        // Position the chevron on the right side of the button
+        NSLayoutConstraint.activate([
+            chevronImageView.trailingAnchor.constraint(equalTo: reportTypeButton.trailingAnchor, constant: -10),
+            chevronImageView.centerYAnchor.constraint(equalTo: reportTypeButton.centerYAnchor),
+            chevronImageView.widthAnchor.constraint(equalToConstant: 12),
+            chevronImageView.heightAnchor.constraint(equalToConstant: 12)
+        ])
         
         // Setup the dropdown menu
         let bugAction = UIAction(title: BugReportType.bug.displayText, image: nil, handler: { [weak self] _ in
@@ -168,6 +192,10 @@ class BugReportFormView: UIView {
             closeButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             closeButton.widthAnchor.constraint(equalToConstant: 30),
             closeButton.heightAnchor.constraint(equalToConstant: 30),
+            
+            // Title label constraints
+            titleLabel.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             // Submit button constraints
             submitButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -12), // Reduced from 16

@@ -38,8 +38,17 @@ class BugReportFormView: UIView {
     // MARK: - Setup
     
     private func setupView() {
-        // Setup background
-        backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        // Setup background with blur effect
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        // Add a semi-transparent black overlay for additional darkness
+        backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        
+        // Make sure blur effect is behind everything else
+        insertSubview(blurEffectView, at: 0)
         
         // Setup container view
         containerView.backgroundColor = .white

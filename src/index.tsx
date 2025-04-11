@@ -1,6 +1,6 @@
 import { NitroModules } from 'react-native-nitro-modules';
 import type { Toadly } from './Toadly.nitro';
-import LoggingService from './LoggingService';
+import { LoggingService, ErrorHandlingService, NetworkMonitoringService } from './services';
 
 const ToadlyHybridObject = NitroModules.createHybridObject<Toadly>('Toadly');
 
@@ -15,7 +15,6 @@ export function setup(
   repoOwner: string,
   repoName: string
 ): void {
-  LoggingService.addLog(`Setting up Toadly with GitHub integration`);
   return ToadlyHybridObject.setup(githubToken, repoOwner, repoName);
 }
 
@@ -43,3 +42,51 @@ export function log(message: string): void {
 export function clearLogs(): void {
   LoggingService.clearLogs();
 }
+
+/**
+ * Enable automatic issue submission for JavaScript errors
+ * @param enable Whether to enable automatic issue submission
+ */
+export function enableAutomaticIssueSubmission(enable: boolean = true): void {
+  ErrorHandlingService.enableAutomaticIssueSubmission(enable);
+}
+
+/**
+ * Start monitoring network requests
+ * This will capture all fetch and XMLHttpRequest calls
+ * Network requests will be included in bug reports
+ */
+export function startNetworkMonitoring(): void {
+  NetworkMonitoringService.getInstance().startMonitoring();
+}
+
+/**
+ * Stop monitoring network requests
+ */
+export function stopNetworkMonitoring(): void {
+  NetworkMonitoringService.getInstance().stopMonitoring();
+}
+
+/**
+ * Check if network monitoring is active
+ */
+export function isNetworkMonitoringActive(): boolean {
+  return NetworkMonitoringService.getInstance().isMonitoring();
+}
+
+/**
+ * Clear network request history
+ */
+export function clearNetworkHistory(): void {
+  NetworkMonitoringService.getInstance().clearRequests();
+}
+
+/**
+ * Intentionally crash the native iOS app for testing crash reporting
+ * This will cause an immediate app crash
+ */
+export function crashNative(): void {
+  return ToadlyHybridObject.crashNative();
+}
+
+export { ToadlyHybridObject };

@@ -7,6 +7,8 @@ class GitHubIssueCreator {
         details: String,
         jsLogs: String,
         screenshotUrl: String? = nil,
+        crashInfo: [String: Any]? = nil,
+        reportType: String? = nil,
         token: String,
         owner: String,
         repo: String,
@@ -19,12 +21,21 @@ class GitHubIssueCreator {
             details: details,
             jsLogs: jsLogs,
             nativeLogs: nativeLogs,
-            screenshotUrl: screenshotUrl
+            screenshotUrl: screenshotUrl,
+            crashInfo: crashInfo,
+            reportType: reportType
         )
+        
+        // Add report type label if available
+        var labels: [String] = []
+        if let reportType = reportType, !reportType.isEmpty {
+            labels.append(reportType)
+        }
         
         submitIssueToGitHub(
             title: title,
             body: issueBody,
+            labels: labels,
             token: token,
             owner: owner,
             repo: repo,
@@ -35,6 +46,7 @@ class GitHubIssueCreator {
     private static func submitIssueToGitHub(
         title: String,
         body: String,
+        labels: [String] = [],
         token: String,
         owner: String,
         repo: String,
@@ -52,10 +64,15 @@ class GitHubIssueCreator {
         request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
         request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         
-        let issueData: [String: Any] = [
+        var issueData: [String: Any] = [
             "title": title,
             "body": body
         ]
+        
+        // Add labels if available
+        if !labels.isEmpty {
+            issueData["labels"] = labels
+        }
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: issueData, options: [])

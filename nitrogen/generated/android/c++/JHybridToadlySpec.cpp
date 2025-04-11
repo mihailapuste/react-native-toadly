@@ -10,6 +10,7 @@
 
 
 #include <string>
+#include <optional>
 
 namespace margelo::nitro::toadly {
 
@@ -42,6 +43,14 @@ namespace margelo::nitro::toadly {
   }
   void JHybridToadlySpec::show() {
     static const auto method = javaClassStatic()->getMethod<void()>("show");
+    method(_javaPart);
+  }
+  void JHybridToadlySpec::createIssueWithTitle(const std::string& title, const std::optional<std::string>& reportType) {
+    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* title */, jni::alias_ref<jni::JString> /* reportType */)>("createIssueWithTitle");
+    method(_javaPart, jni::make_jstring(title), reportType.has_value() ? jni::make_jstring(reportType.value()) : nullptr);
+  }
+  void JHybridToadlySpec::crashNative() {
+    static const auto method = javaClassStatic()->getMethod<void()>("crashNative");
     method(_javaPart);
   }
 

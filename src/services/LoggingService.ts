@@ -1,8 +1,14 @@
-class LoggingService {
+import { LogTypes, type ConsoleOverrides } from './types';
+import type { ILoggingService } from './interfaces';
+
+/**
+ * LoggingService manages log collection and console overrides
+ */
+class LoggingService implements ILoggingService {
   private static instance: LoggingService;
   private logs: string[] = [];
   private maxLogs: number = 50;
-  private originalConsole = {
+  private originalConsole: ConsoleOverrides = {
     log: console.log,
     info: console.info,
     warn: console.warn,
@@ -14,6 +20,19 @@ class LoggingService {
     this.setupConsoleOverrides();
   }
 
+  /**
+   * Get the singleton instance of LoggingService
+   */
+  public static getInstance(): LoggingService {
+    if (!LoggingService.instance) {
+      LoggingService.instance = new LoggingService();
+    }
+    return LoggingService.instance;
+  }
+
+  /**
+   * Set up console method overrides to capture logs
+   */
   private setupConsoleOverrides() {
     // Only override once to prevent recursion
     if (this.isOverridden) {
@@ -23,34 +42,30 @@ class LoggingService {
     this.isOverridden = true;
 
     console.log = (...args: any[]) => {
-      this.captureLog('LOG', ...args);
+      this.captureLog(LogTypes.LOG, ...args);
       this.originalConsole.log(...args);
     };
 
     console.info = (...args: any[]) => {
-      this.captureLog('INFO', ...args);
+      this.captureLog(LogTypes.INFO, ...args);
       this.originalConsole.info(...args);
     };
 
     console.warn = (...args: any[]) => {
-      this.captureLog('WARN', ...args);
+      this.captureLog(LogTypes.WARN, ...args);
       this.originalConsole.warn(...args);
     };
 
     console.error = (...args: any[]) => {
-      this.captureLog('ERROR', ...args);
+      this.captureLog(LogTypes.ERROR, ...args);
       this.originalConsole.error(...args);
     };
   }
 
-  public static getInstance(): LoggingService {
-    if (!LoggingService.instance) {
-      LoggingService.instance = new LoggingService();
-    }
-    return LoggingService.instance;
-  }
-
-  private captureLog(level: string, ...args: any[]): void {
+  /**
+   * Capture a log entry with timestamp and level
+   */
+  private captureLog(level: LogTypes, ...args: any[]): void {
     try {
       const timestamp = new Date().toISOString();
       const message = args
@@ -66,7 +81,9 @@ class LoggingService {
         })
         .join(' ');
 
-      const logEntry = `[${timestamp}] [${level}] ${message}`;
+      const formattedLevel = level === LogTypes.TOADLY ? LogTypes.TOADLY : `[${level}]`;
+      
+      const logEntry = `[${timestamp}] ${formattedLevel} ${message}`;
       
       this.logs.push(logEntry);
 
@@ -84,7 +101,7 @@ class LoggingService {
   }
 
   public addLog(message: string): void {
-    this.captureLog('TOADLY', message);
+    this.captureLog(LogTypes.TOADLY, message);
   }
 
   public clearLogs(): void {

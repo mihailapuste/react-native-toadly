@@ -4,7 +4,7 @@ import NitroModules
 class Toadly: HybridToadlySpec {
     private static var hasSetupBeenCalled = false
 
-    private let bugReportDialog = BugReportDialog()
+    private let bugReportController = BugReportController()
     private var jsLogs: String = ""
     private var screenshotData: Data?
 
@@ -87,19 +87,19 @@ class Toadly: HybridToadlySpec {
     }
 
     public func show() throws {
-        LoggingService.info("Showing bug report dialog")
+        LoggingService.info("Showing bug report form")
         
         captureScreenshot()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
             
-            guard let rootViewController = BugReportDialog.getRootViewController() else {
+            guard let rootViewController = self.getRootViewController() else {
                 LoggingService.error("Failed to get root view controller")
                 return
             }
 
-            self.bugReportDialog.show(
+            self.bugReportController.show(
                 from: rootViewController,
                 onSubmit: { [weak self] email, title, details in
                     guard let self = self else { return }
@@ -129,6 +129,24 @@ class Toadly: HybridToadlySpec {
                 }
             )
         }
+    }
+    
+    private func getRootViewController() -> UIViewController? {
+        // Get the key window
+        let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.windows.first
+        
+        // Get the root view controller
+        guard let rootViewController = keyWindow?.rootViewController else {
+            return nil
+        }
+        
+        // Find the top-most presented view controller
+        var topController = rootViewController
+        while let presentedController = topController.presentedViewController {
+            topController = presentedController
+        }
+        
+        return topController
     }
     
     public func crashNative() throws {

@@ -1,10 +1,14 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/52d29b6b-c638-4963-bc1b-ac62bf5ee820" alt="Screenshot" height="200">
+  <img src="https://github.com/user-attachments/assets/52d29b6b-c638-4963-bc1b-ac62bf5ee820" alt="Screenshot" height="180">
 </p>
 
-<h1 align="center">Toadly for React Native</h1>
 
-A lightweight, open-source bug reporting tool for React Native applications (work in progress)
+
+
+
+## Introduction
+
+**Toadly** is a lightweight, open-source bug reporting tool for React Native applications (work in progress)
 
 Toadly helps React Native developers identify and fix issues faster by providing simple bug reporting, log collection, and GitHub integration. This project is currently under active development with more features coming soon.
 
@@ -14,13 +18,15 @@ Toadly helps React Native developers identify and fix issues faster by providing
 Simple in-app bug reporting dialog that lets users report issues directly from your app
 
 ### Log Collection
-Capture console logs and custom events to provide context for bug reports
+Capture js and native logs along to provide context for bug/crash reports
+
+### Crash Reporting
+Auto submit crashes along with logs, trace and session information
 
 ### GitHub Integration
 Automatically create GitHub issues with detailed bug reports including logs and device info
 
 ### Coming Soon
-- Crash reporting with stack traces
 - Network request monitoring
 - Custom metadata attachment
 - Screenshot annotations
@@ -42,21 +48,7 @@ yarn add react-native-toadly react-native-nitro-modules
 cd ios && pod install && cd ..
 ```
 
-### 3. Create a configuration file:
-
-Create a `config.ts` file in your project root with your GitHub credentials:
-
-```typescript
-export const config = {
-  github: {
-    token: 'YOUR_GITHUB_TOKEN',
-    repoOwner: 'YOUR_GITHUB_USERNAME_OR_ORG',
-    repoName: 'YOUR_REPOSITORY_NAME',
-  },
-};
-```
-
-### 4. Initialize Toadly in your app:
+### 3. Initialize Toadly in your app:
 
 ```typescript
 import React, { useEffect } from 'react';
@@ -92,8 +84,13 @@ export default function App() {
 
 - `Toadly.setup(token, repoOwner, repoName)` - Initialize Toadly with GitHub credentials
 - `Toadly.show()` - Show the bug reporting dialog
-- `Toadly.log(message)` - Add a custom log entry
-- `Toadly.clearLogs()` - Clear collected logs
+- `Toadly.log(message)` - Add a custom log entry. Console logs are automatically captured
+- `Toadly.clearLogs()` - Manually clear collected logs
+- `Toadly.enableAutomaticIssueSubmission()` - Enable automatic issue submission for JS crashes
+- `Toadly.startNetworkMonitoring()` - Start logging network requests to be included in reports
+- `Toadly.stopNetworkMonitoring()` - Start logging network requests
+- `Toadly.isNetworkMonitoringActive()` - Check network logging enabled status
+- `Toadly.clearNetworkHistory()` - Manually clear network logs
 
 ## Example App
 

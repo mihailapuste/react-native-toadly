@@ -21,9 +21,9 @@ class GitHubService(
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
     
     private val labelMap = mapOf(
-        "🐞 Bug" to "bug",
-        "💡 Suggestion" to "enhancement",
-        "❓ Question" to "question",
+        "bug" to "bug",
+        "enhancement" to "enhancement",
+        "question" to "question",
         "crash" to "crash"
     )
 

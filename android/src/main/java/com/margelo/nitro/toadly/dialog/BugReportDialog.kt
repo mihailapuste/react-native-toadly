@@ -18,7 +18,7 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
 
     private val reportTypesMap = mapOf(
         "🐞 Bug" to "bug",
-        "💡 Suggestion" to "suggestion",
+        "💡 Suggestion" to "enhancement",
         "❓ Question" to "question"
     )
     

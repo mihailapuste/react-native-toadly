@@ -112,8 +112,7 @@ $nativeLogs
             
             return when (reportType.lowercase()) {
                 "bug" -> "🐛"
-                "suggestion" -> "💡"
-                "crash" -> "🚨"
+                "enhancement" -> "💡"
                 "question" -> "❓"
                 else -> "🐛"
             }

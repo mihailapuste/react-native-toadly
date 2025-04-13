@@ -1,17 +1,21 @@
 package com.margelo.nitro.toadly
 
-import com.facebook.proguard.annotations.DoNotStrip
+import android.app.Activity
 import android.content.Context
-import kotlin.collections.Map
+import com.facebook.react.bridge.UiThreadUtil
+import com.facebook.proguard.annotations.DoNotStrip
 import com.margelo.nitro.toadly.dialog.BugReportDialog
+import com.margelo.nitro.toadly.github.GitHubService
+import kotlin.collections.Map
 
 @DoNotStrip
 class Toadly : HybridToadlySpec() {
     private var hasSetupBeenCalled = false
-    private var jsLogs = mutableListOf<String>()
-    private var githubToken = ""
-    private var repoOwner = ""
-    private var repoName = ""
+    private val jsLogs = mutableListOf<String>()
+    private var githubToken: String = ""
+    private var repoOwner: String = ""
+    private var repoName: String = ""
+    private lateinit var githubService: GitHubService
 
     override fun setup(githubToken: String, repoOwner: String, repoName: String) {
         if (hasSetupBeenCalled) {
@@ -22,6 +26,7 @@ class Toadly : HybridToadlySpec() {
         this.githubToken = githubToken
         this.repoOwner = repoOwner
         this.repoName = repoName
+        this.githubService = GitHubService(githubToken, repoOwner, repoName)
 
         LoggingService.info("Setting up Toadly with GitHub integration")
     }
@@ -33,7 +38,16 @@ class Toadly : HybridToadlySpec() {
 
     override fun createIssueWithTitle(title: String, reportType: String?) {
         LoggingService.info("Creating issue with title: $title, type: ${reportType ?: "bug"}")
-        // GitHub integration will be implemented later
+        
+        val description = jsLogs.joinToString("\n")
+        val type = reportType ?: "bug"
+        
+        Thread {
+            val success = githubService.createIssue(title, description, type)
+            if (!success) {
+                LoggingService.info("Failed to create GitHub issue")
+            }
+        }.start()
     }
 
     override fun show() {

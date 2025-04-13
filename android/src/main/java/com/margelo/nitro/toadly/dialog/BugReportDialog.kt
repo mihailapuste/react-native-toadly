@@ -15,7 +15,15 @@ import com.margelo.nitro.toadly.LoggingService
 import com.margelo.nitro.toadly.R
 
 class BugReportDialog(private val context: Context, private val onSubmit: (String, String) -> Unit) {
-    private val reportTypes = arrayOf("🐞 Bug", "💡 Suggestion", "❓ Question")
+
+    private val reportTypesMap = mapOf(
+        "🐞 Bug" to "bug",
+        "💡 Suggestion" to "enhancement",
+        "❓ Question" to "question"
+    )
+    
+
+    private val reportTypeDisplays = reportTypesMap.keys.toTypedArray()
 
     fun show() {
         Handler(Looper.getMainLooper()).post {
@@ -31,7 +39,8 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                 val closeButton = layout.findViewById<ImageButton>(R.id.closeButton)
                 val sendButton = layout.findViewById<ImageButton>(R.id.sendButton)
               
-                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, reportTypes)
+                // Set up the spinner with report types
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, reportTypeDisplays)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 reportTypeSpinner.adapter = adapter
 
@@ -42,7 +51,8 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                 sendButton.setOnClickListener {
                     val email = emailEditText.text?.toString() ?: ""
                     val description = descriptionEditText.text?.toString() ?: ""
-                    val reportType = reportTypes[reportTypeSpinner.selectedItemPosition]
+                    val selectedTypeDisplay = reportTypeSpinner.selectedItem.toString()
+                    val typeLabel = reportTypesMap[selectedTypeDisplay] ?: "bug" // Get GitHub label without emoji
 
                     if (email.isEmpty() || description.isEmpty()) {
                         Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
@@ -55,7 +65,7 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                         description
                     }
 
-                    onSubmit(title, reportType.split(" ")[0].lowercase())
+                    onSubmit(title, typeLabel) // Pass the GitHub label, not the display string
                     Toast.makeText(context, "Bug report submitted", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }

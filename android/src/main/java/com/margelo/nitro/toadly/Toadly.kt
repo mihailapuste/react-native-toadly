@@ -9,7 +9,7 @@ import com.margelo.nitro.toadly.github.GitHubService
 import kotlin.collections.Map
 
 @DoNotStrip
-class Toadly : HybridToadlySpec() {
+object Toadly : HybridToadlySpec() {
     private var hasSetupBeenCalled = false
     private val jsLogs = mutableListOf<String>()
     private var githubToken: String = ""

@@ -14,11 +14,11 @@ import androidx.appcompat.widget.AppCompatSpinner
 import com.margelo.nitro.toadly.LoggingService
 import com.margelo.nitro.toadly.R
 
-class BugReportDialog(private val context: Context, private val onSubmit: (String, String) -> Unit) {
+class BugReportDialog(private val context: Context, private val onSubmit: (String, String, String) -> Unit) {
 
     private val reportTypesMap = mapOf(
         "🐞 Bug" to "bug",
-        "💡 Suggestion" to "enhancement",
+        "💡 Suggestion" to "suggestion",
         "❓ Question" to "question"
     )
     
@@ -65,7 +65,7 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                         description
                     }
 
-                    onSubmit(title, typeLabel) // Pass the GitHub label, not the display string
+                    onSubmit(title, typeLabel, email)
                     Toast.makeText(context, "Bug report submitted", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }

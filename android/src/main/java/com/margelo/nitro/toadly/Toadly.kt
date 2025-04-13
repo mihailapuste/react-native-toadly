@@ -41,10 +41,12 @@ class Toadly : HybridToadlySpec() {
         
         val description = "User submitted bug report"
         val type = reportType ?: "bug"
+        val email = "auto-generated@toadly.app"
         val jsLogsContent = jsLogs.joinToString("\n")
         val nativeLogs = LoggingService.getLogs()
         
         val currentActivity = getCurrentActivity()
+
         if (currentActivity == null) {
             LoggingService.error("Cannot create GitHub issue: no activity context found")
             return
@@ -56,6 +58,7 @@ class Toadly : HybridToadlySpec() {
                     context = currentActivity,
                     title = title,
                     details = description,
+                    email = email,
                     jsLogs = jsLogsContent,
                     nativeLogs = nativeLogs,
                     reportType = type
@@ -82,9 +85,47 @@ class Toadly : HybridToadlySpec() {
             return
         }
 
-        BugReportDialog(currentActivity) { title, reportType ->
-            createIssueWithTitle(title, reportType)
+        BugReportDialog(currentActivity) { title, reportType, email ->
+            createIssueWithEmailAndTitle(title, reportType, email)
         }.show()
+    }
+
+    private fun createIssueWithEmailAndTitle(title: String, reportType: String, email: String) {
+        LoggingService.info("Creating issue with title: $title, type: $reportType, email: $email")
+        
+        val description = "User submitted bug report"
+        val type = reportType
+        val jsLogsContent = jsLogs.joinToString("\n")
+        val nativeLogs = LoggingService.getLogs()
+        
+        val currentActivity = getCurrentActivity()
+
+        if (currentActivity == null) {
+            LoggingService.error("Cannot create GitHub issue: no activity context found")
+            return
+        }
+        
+        Thread {
+            try {
+                val success = githubService.createIssue(
+                    context = currentActivity,
+                    title = title,
+                    details = description,
+                    email = email,
+                    jsLogs = jsLogsContent,
+                    nativeLogs = nativeLogs,
+                    reportType = type
+                )
+                
+                if (success) {
+                    LoggingService.info("Successfully created GitHub issue")
+                } else {
+                    LoggingService.info("Failed to create GitHub issue")
+                }
+            } catch (e: Exception) {
+                LoggingService.error("Error creating GitHub issue: ${e.message}")
+            }
+        }.start()
     }
 
     override fun crashNative() {

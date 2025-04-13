@@ -23,7 +23,8 @@ class GitHubService(
     private val labelMap = mapOf(
         "🐞 Bug" to "bug",
         "💡 Suggestion" to "enhancement",
-        "❓ Question" to "question"
+        "❓ Question" to "question",
+        "crash" to "crash"
     )
 
     fun createIssue(
@@ -32,13 +33,14 @@ class GitHubService(
         details: String, 
         jsLogs: String,
         nativeLogs: String,
-        reportType: String
+        reportType: String,
+        email: String
     ): Boolean {
         val url = "$baseUrl/repos/$repoOwner/$repoName/issues"
         
         val issueBody = GitHubIssueTemplate.generateIssueBody(
             context = context,
-            email = "auto-generated@toadly.app", // TODO: Update with other
+            email = email,
             details = details,
             jsLogs = jsLogs,
             nativeLogs = nativeLogs,

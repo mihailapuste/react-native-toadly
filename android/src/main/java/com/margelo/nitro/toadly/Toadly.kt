@@ -15,7 +15,7 @@ import kotlin.collections.Map
 @DoNotStrip
 class Toadly : HybridToadlySpec() {
     private var hasSetupBeenCalled = false
-    private var jsLogs = ""
+    private var jsLogs = mutableListOf<String>()
     private var githubToken = ""
     private var repoOwner = ""
     private var repoName = ""
@@ -34,7 +34,7 @@ class Toadly : HybridToadlySpec() {
     }
 
     override fun addJSLogs(logs: String) {
-        this.jsLogs = logs
+        this.jsLogs.add(logs)
         LoggingService.info("Received JavaScript logs")
     }
 

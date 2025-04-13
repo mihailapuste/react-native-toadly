@@ -8,7 +8,7 @@
 
 ## Introduction
 
-**Toadly** is a lightweight, open-source bug reporting tool for React Native applications (work in progress)
+**Toadly** is a lightweight, open-source bug reporting tool for React Native applications
 
 Toadly helps React Native developers identify and fix issues faster by providing simple bug reporting, log collection, and GitHub integration. This project is currently under active development with more features coming soon.
 

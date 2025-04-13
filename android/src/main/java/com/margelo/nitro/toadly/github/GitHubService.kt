@@ -1,5 +1,6 @@
 package com.margelo.nitro.toadly.github
 
+import android.content.Context
 import com.margelo.nitro.toadly.LoggingService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -18,14 +19,37 @@ class GitHubService(
     private val client = OkHttpClient()
     private val baseUrl = "https://api.github.com"
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+    
+    private val labelMap = mapOf(
+        "🐞 Bug" to "bug",
+        "💡 Suggestion" to "enhancement",
+        "❓ Question" to "question"
+    )
 
-    fun createIssue(title: String, description: String, type: String): Boolean {
+    fun createIssue(
+        context: Context,
+        title: String, 
+        details: String, 
+        jsLogs: String,
+        nativeLogs: String,
+        reportType: String
+    ): Boolean {
         val url = "$baseUrl/repos/$repoOwner/$repoName/issues"
         
-        val issueBody = buildIssueBody(description, type)
+        val issueBody = GitHubIssueTemplate.generateIssueBody(
+            context = context,
+            email = "auto-generated@toadly.app", // TODO: Update with other
+            details = details,
+            jsLogs = jsLogs,
+            nativeLogs = nativeLogs,
+            reportType = reportType
+        )
+        
+        val label = labelMap[reportType] ?: "bug" // Default to "bug" if type not found in map
         val labels = JSONArray().apply {
-            put(type.lowercase())
+            put(label)
         }
+        
         val jsonBody = JSONObject().apply {
             put("title", title)
             put("body", issueBody)
@@ -55,21 +79,5 @@ class GitHubService(
             LoggingService.info("Error creating GitHub issue: ${e.message}")
             false
         }
-    }
-
-    private fun buildIssueBody(description: String, type: String): String {
-        return """
-        |## Bug Report
-        |
-        |### Type
-        |$type
-        |
-        |### Description
-        |$description
-        |
-        |### System Information
-        |* Platform: Android
-        |* Report Time: ${Date()}
-        """.trimMargin()
     }
 }

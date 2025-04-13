@@ -70,6 +70,15 @@ object LoggingService {
     }
     
     /**
+     * Get all collected logs as a single string
+     */
+    fun getLogs(): String {
+        synchronized(logs) {
+            return logs.joinToString("\n")
+        }
+    }
+    
+    /**
      * Clear all stored logs
      */
     fun clearLogs() {

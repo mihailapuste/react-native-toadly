@@ -39,13 +39,35 @@ class Toadly : HybridToadlySpec() {
     override fun createIssueWithTitle(title: String, reportType: String?) {
         LoggingService.info("Creating issue with title: $title, type: ${reportType ?: "bug"}")
         
-        val description = jsLogs.joinToString("\n")
+        val description = "User submitted bug report"
         val type = reportType ?: "bug"
+        val jsLogsContent = jsLogs.joinToString("\n")
+        val nativeLogs = LoggingService.getLogs()
+        
+        val currentActivity = getCurrentActivity()
+        if (currentActivity == null) {
+            LoggingService.error("Cannot create GitHub issue: no activity context found")
+            return
+        }
         
         Thread {
-            val success = githubService.createIssue(title, description, type)
-            if (!success) {
-                LoggingService.info("Failed to create GitHub issue")
+            try {
+                val success = githubService.createIssue(
+                    context = currentActivity,
+                    title = title,
+                    details = description,
+                    jsLogs = jsLogsContent,
+                    nativeLogs = nativeLogs,
+                    reportType = type
+                )
+                
+                if (success) {
+                    LoggingService.info("Successfully created GitHub issue")
+                } else {
+                    LoggingService.info("Failed to create GitHub issue")
+                }
+            } catch (e: Exception) {
+                LoggingService.error("Error creating GitHub issue: ${e.message}")
             }
         }.start()
     }

@@ -4,12 +4,13 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.AutoCompleteTextView
+import android.widget.Spinner
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import android.widget.ImageButton
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.widget.AppCompatSpinner
 import com.margelo.nitro.toadly.LoggingService
 import com.margelo.nitro.toadly.R
 
@@ -25,14 +26,14 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                 val layout = LayoutInflater.from(context).inflate(R.layout.dialog_bug_report, null)
 
                 val emailEditText = layout.findViewById<EditText>(R.id.emailEditText)
-                val reportTypeSpinner = layout.findViewById<AutoCompleteTextView>(R.id.reportTypeSpinner)
+                val reportTypeSpinner = layout.findViewById<AppCompatSpinner>(R.id.reportTypeSpinner)
                 val descriptionEditText = layout.findViewById<EditText>(R.id.descriptionEditText)
                 val closeButton = layout.findViewById<ImageButton>(R.id.closeButton)
                 val sendButton = layout.findViewById<ImageButton>(R.id.sendButton)
               
-                val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, reportTypes)
-                reportTypeSpinner.setAdapter(adapter)
-                reportTypeSpinner.setText(reportTypes[0], false)
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, reportTypes)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                reportTypeSpinner.adapter = adapter
 
                 closeButton.setOnClickListener {
                     dialog.dismiss()
@@ -41,7 +42,7 @@ class BugReportDialog(private val context: Context, private val onSubmit: (Strin
                 sendButton.setOnClickListener {
                     val email = emailEditText.text?.toString() ?: ""
                     val description = descriptionEditText.text?.toString() ?: ""
-                    val reportType = reportTypeSpinner.text?.toString() ?: reportTypes[0]
+                    val reportType = reportTypes[reportTypeSpinner.selectedItemPosition]
 
                     if (email.isEmpty() || description.isEmpty()) {
                         Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()

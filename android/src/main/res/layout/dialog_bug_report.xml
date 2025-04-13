@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:padding="6dp"
+            android:padding="16dp"
             android:background="@drawable/edit_text_background" />
 
         <!-- Description Input -->

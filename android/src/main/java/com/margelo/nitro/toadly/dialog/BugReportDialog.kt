@@ -15,7 +15,7 @@ import com.margelo.nitro.toadly.LoggingService
 import com.margelo.nitro.toadly.R
 
 class BugReportDialog(private val context: Context, private val onSubmit: (String, String) -> Unit) {
-    private val reportTypes = arrayOf("Bug 🐞", "Suggestion 💡", "Question ❓")
+    private val reportTypes = arrayOf("🐞 Bug", "💡 Suggestion", "❓ Question")
 
     fun show() {
         Handler(Looper.getMainLooper()).post {

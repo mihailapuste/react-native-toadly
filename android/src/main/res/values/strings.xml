@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Toadly</string>
+    <string name="bug_report_title">Need help?</string>
+    <string name="bug_report_email_hint">Email</string>
+    <string name="bug_report_description_hint">Description</string>
+    <string name="bug_report_type_label">Report Type</string>
+    <string name="bug_report_submit">Submit</string>
+    <string name="bug_report_cancel">Cancel</string>
+</resources>

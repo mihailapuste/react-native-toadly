@@ -1549,7 +1549,7 @@ PODS:
     - React-perflogger (= 0.78.1)
     - React-utils (= 0.78.1)
   - SocketRocket (0.7.1)
-  - Toadly (0.1.0):
+  - Toadly (0.3.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1856,7 +1856,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 82d5bc3e3ad2c8496848554cb2d3b64b03b53420
   ReactCommon: 269d0d36423fad044eaea49900e88684ac670a16
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  Toadly: 78ab6302c196e72190a0ccc921eed8ce46d9266d
+  Toadly: 381b9d1f3e8e071218788df213afbef2f506da7c
   Yoga: b94ff2d7559cb66837c97a3f394ddb817faad4d6
 
 PODFILE CHECKSUM: 68c58cc10501990fdcdb153e1a17e9442f0b5198

@@ -3,6 +3,7 @@ import NitroModules
 
 class Toadly: HybridToadlySpec {
     private static var hasSetupBeenCalled = false
+    static var shared: Toadly?
 
     private let bugReportController = BugReportController()
     private var jsLogs: String = ""
@@ -13,9 +14,19 @@ class Toadly: HybridToadlySpec {
             return
         }
         Toadly.hasSetupBeenCalled = true
+        Toadly.shared = self
 
         LoggingService.info("Setting up Toadly with GitHub integration")
         GitHubService.setup(githubToken: githubToken, repoOwner: repoOwner, repoName: repoName)
+        
+        // Set up the exception handler
+        setupExceptionHandler()
+    }
+    
+    private func setupExceptionHandler() {
+        // Initialize the exception handling service with Toadly integration
+        ExceptionHandlingService.setupWithToadly()
+        LoggingService.info("Native exception handler registered")
     }
     
     public func addJSLogs(logs: String) throws {

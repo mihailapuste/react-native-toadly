@@ -7,6 +7,7 @@ class GitHubIssueCreator {
         details: String,
         jsLogs: String,
         screenshotUrl: String? = nil,
+        replayUrl: String? = nil,
         crashInfo: [String: Any]? = nil,
         reportType: String? = nil,
         token: String,
@@ -22,6 +23,7 @@ class GitHubIssueCreator {
             jsLogs: jsLogs,
             nativeLogs: nativeLogs,
             screenshotUrl: screenshotUrl,
+            replayUrl: replayUrl,
             crashInfo: crashInfo,
             reportType: reportType
         )
@@ -30,6 +32,11 @@ class GitHubIssueCreator {
         var labels: [String] = []
         if let reportType = reportType, !reportType.isEmpty {
             labels.append(reportType)
+        }
+        
+        // Add session-replay label if replay is included
+        if replayUrl != nil {
+            labels.append("session-replay")
         }
         
         submitIssueToGitHub(

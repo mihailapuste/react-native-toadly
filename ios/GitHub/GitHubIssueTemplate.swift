@@ -8,6 +8,7 @@ public struct GitHubIssueTemplate {
         jsLogs: String,
         nativeLogs: String,
         screenshotUrl: String? = nil,
+        replayUrl: String? = nil,
         crashInfo: [String: Any]? = nil,
         reportType: String? = nil
     ) -> String {
@@ -139,12 +140,24 @@ public struct GitHubIssueTemplate {
         
         """
         
+        // Add session replay if available
+        if let replayUrl = replayUrl {
+            issueBody += """
+            
+            <details>
+            <summary>📽️ Session Replay (Last 15 seconds)</summary>
+            
+            ![Session Replay](\(replayUrl))
+            </details>
+            """
+        }
+        
         // Add screenshot if available
         if let screenshotUrl = screenshotUrl {
             issueBody += """
             
             <details>
-            <summary>Screenshot</summary>
+            <summary>📷 Screenshot</summary>
             
             ![Screenshot](\(screenshotUrl))
             </details>

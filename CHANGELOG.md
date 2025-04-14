@@ -1,10 +1,29 @@
 # Changelog
 
+All notable changes to the Toadly module will be documented in this file.
+
 ## [Unreleased]
 
 - Auto report js crash/exception handling on ios
 
+### Added
+- Session replay functionality for iOS
+  - Captures screenshots every 1 second
+  - Maintains a buffer of the last 15 seconds of images
+  - Creates a GIF from these images when a user reports an issue
+  - Uploads the GIF to GitHub and includes it in the issue template
+  - Automatically adds a "session-replay" label to issues with replay data
+- Improved GitHub issue template with collapsible sections for screenshots and session replays
+- Added session replay toggle to enable/disable the feature
 
+### Changed
+- Refactored GitHubService to use DispatchGroup for better handling of multiple uploads
+- Enhanced GitHubImageUploader to support different file types and custom filenames
+- Updated GitHubIssueCreator to include session replay URLs in issue body
+
+### Fixed
+- Improved error handling in image upload process
+- Fixed memory management in session replay by using low-resolution images
 
 ## [0.3.3] - 2025-04-13
 

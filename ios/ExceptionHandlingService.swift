@@ -123,6 +123,22 @@ private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = {
         
         return backtrace
     }
+    
+    static func getFreeDiskSpace() -> String? {
+        let fileURL = URL(fileURLWithPath: NSHomeDirectory())
+        do {
+            let values = try fileURL.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+            if let capacity = values.volumeAvailableCapacityForImportantUsage {
+                let formatter = ByteCountFormatter()
+                formatter.allowedUnits = [.useGB]
+                formatter.countStyle = .file
+                return formatter.string(fromByteCount: Int64(capacity))
+            }
+        } catch {
+            print("Error getting disk space: \(error.localizedDescription)")
+        }
+        return nil
+    }
 }
 
 private func handleException(exception: NSException) {
@@ -131,6 +147,8 @@ private func handleException(exception: NSException) {
     if exceptionCount > uncaughtExceptionMaximum {
         return
     }
+    
+    LoggingService.error("Native exception caught: \(exception.name.rawValue) - \(exception.reason ?? "Unknown reason")")
     
     let callStack = ExceptionHandlingService.backtrace()
     var userInfo = exception.userInfo ?? [:]
@@ -156,19 +174,44 @@ private func signalHandler(signal: Int32) {
         return
     }
     
+    let signalName: String
+
+    switch signal {
+        case SIGABRT: signalName = "SIGABRT (Abort)"
+        case SIGILL: signalName = "SIGILL (Illegal Instruction)"
+        case SIGSEGV: signalName = "SIGSEGV (Segmentation Fault)"
+        case SIGFPE: signalName = "SIGFPE (Floating Point Exception)"
+        case SIGBUS: signalName = "SIGBUS (Bus Error)"
+        case SIGPIPE: signalName = "SIGPIPE (Broken Pipe)"
+        default: signalName = "Signal \(signal)"
+    }
+    
     let callStack = ExceptionHandlingService.backtrace()
+    
+    // Log comprehensive error information
+    LoggingService.error("""
+        Fatal crash detected: \(signalName)
+        Thread: \(Thread.current.isMainThread ? "Main Thread" : "Background Thread")
+        Time: \(Date())
+        Backtrace:
+        \(callStack.joined(separator: "\n"))
+        """)
+    
     let userInfo: [String: Any] = [
         ToadlyUncaughtExceptionHandlerSignalKey: NSNumber(value: signal),
-        ToadlyUncaughtExceptionHandlerAddressesKey: callStack
+        ToadlyUncaughtExceptionHandlerAddressesKey: callStack,
+        "signalName": signalName,
+        "isMainThread": Thread.current.isMainThread
     ]
     
     let exception = NSException(
         name: NSExceptionName(rawValue: ToadlyUncaughtExceptionHandlerSignalExceptionName),
-        reason: "Signal \(signal) was raised.",
+        reason: "Fatal crash: \(signalName)",
         userInfo: userInfo
     )
     
     let handler = ExceptionHandlingService()
+
     handler.performSelector(
         onMainThread: #selector(ExceptionHandlingService.handleExceptionInternal(_:)),
         with: exception,

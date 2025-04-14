@@ -1,37 +1,33 @@
 import Foundation
 import UIKit
 
-// Constants
 let ToadlyUncaughtExceptionHandlerSignalExceptionName = "ToadlyUncaughtExceptionHandlerSignalExceptionName"
 let ToadlyUncaughtExceptionHandlerSignalKey = "ToadlyUncaughtExceptionHandlerSignalKey"
 let ToadlyUncaughtExceptionHandlerAddressesKey = "ToadlyUncaughtExceptionHandlerAddressesKey"
 
-// Global variables
 private var dismissApp = true
 private var uncaughtExceptionCount: Int32 = 0
 private let uncaughtExceptionMaximum: Int32 = 10
 private let skipAddressCount = 4
 private let reportAddressCount = 5
 
-// Callback blocks
 private var nativeErrorCallbackBlock: ((NSException, String) -> Void)?
 private var previousNativeErrorCallbackBlock: (@convention(c) (NSException) -> Void)?
 private var callPreviousNativeErrorCallbackBlock = false
 private var jsErrorCallbackBlock: ((NSException, String) -> Void)?
 
-// Default native error handler
 private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = { exception, readableException in
     DispatchQueue.main.async {
         let alert = UIAlertController(
-            title: "Unexpected error occurred",
-            message: "Apologies..The app will close now \nPlease restart the app\n\n\(readableException)",
+            title: "Oops!",
+            message: "An error occurred. We're on it and have reported the issue. Please restart the app.",
             preferredStyle: .alert
         )
-        
+            
         if let rootViewController = UIApplication.shared.delegate?.window??.rootViewController {
             rootViewController.present(alert, animated: true, completion: nil)
         }
-        
+            
         Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
             ExceptionHandlingService.releaseExceptionHold()
         }
@@ -41,22 +37,17 @@ private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = {
 @objc public class ExceptionHandlingService: NSObject {
     
     @objc public static func setupExceptionHandler(callPreviousHandler: Bool = false) {
-        // Store the previous exception handler
         previousNativeErrorCallbackBlock = NSGetUncaughtExceptionHandler()
         callPreviousNativeErrorCallbackBlock = callPreviousHandler
         
-        // Set our custom exception handler
         NSSetUncaughtExceptionHandler(handleException)
         
-        // Set up signal handlers
-        signal(SIGABRT, signalHandler)
-        signal(SIGILL, signalHandler)
-        signal(SIGSEGV, signalHandler)
-        signal(SIGFPE, signalHandler)
-        signal(SIGBUS, signalHandler)
-        // Not setting SIGPIPE as it can cause issues
-        
-        print("[Toadly] Registered native exception handler")
+        signal(SIGABRT, signalHandler) // Handle abort
+        signal(SIGILL, signalHandler) // Handle illegal instruction
+        signal(SIGSEGV, signalHandler) // Handle segmentation fault
+        signal(SIGFPE, signalHandler) // Handle floating point exception
+        signal(SIGBUS, signalHandler) // Handle bus error
+        // Not setting SIGPIPE as it causes known issues
     }
     
     @objc public static func setCustomExceptionHandler(_ handler: @escaping (NSException, String) -> Void) {
@@ -69,29 +60,25 @@ private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = {
     
     @objc public static func releaseExceptionHold() {
         dismissApp = true
-        print("[Toadly] Releasing locked exception handler")
+        print("Releasing locked exception handler")
     }
     
-    // Handle the exception on the main thread
     @objc func handleExceptionInternal(_ exception: NSException) {
         let callStack = exception.callStackSymbols
         let readableError = "\(exception.reason ?? "Unknown reason")\n\(callStack.joined(separator: "\n"))"
         
         dismissApp = false
         
-        // Call previous handler if requested
         if callPreviousNativeErrorCallbackBlock, let previousHandler = previousNativeErrorCallbackBlock {
             previousHandler(exception)
         }
         
-        // Call custom native handler or default
         if let customHandler = nativeErrorCallbackBlock {
             customHandler(exception, readableError)
         } else {
             defaultNativeErrorCallbackBlock(exception, readableError)
         }
         
-        // Call JS callback if available
         jsErrorCallbackBlock?(exception, readableError)
         
         // Keep the app alive to show the error
@@ -121,14 +108,14 @@ private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = {
         }
     }
     
-    // Get backtrace for the current thread
     @objc public static func backtrace() -> [String] {
         var callstack = [UnsafeMutableRawPointer?](repeating: nil, count: 128)
         let frames = Darwin.backtrace(&callstack, 128)
         let strs = backtrace_symbols(&callstack, frames)!
         
         var backtrace = [String]()
-      for i in skipAddressCount..<min(skipAddressCount + reportAddressCount, Int(frames)) {
+
+        for i in skipAddressCount..<min(skipAddressCount + reportAddressCount, Int(frames)) {
             if let symbol = strs[i] {
                 backtrace.append(String(cString: symbol))
             }
@@ -136,43 +123,11 @@ private let defaultNativeErrorCallbackBlock: ((NSException, String) -> Void) = {
         
         return backtrace
     }
-    
-    // Integration with Toadly
-    @objc public static func setupWithToadly() {
-        setupExceptionHandler()
-        
-        // Set a custom handler that will create GitHub issues
-        setCustomExceptionHandler { exception, readableError in
-            // Create a GitHub issue with the crash details
-            DispatchQueue.global(qos: .background).async {
-                if let toadly = Toadly.shared {
-                    let title = "iOS Crash: \(exception.name.rawValue)"
-                    let reportType = "crash"
-                    
-                    // Create GitHub issue
-                    do {
-                        try toadly.createIssueWithTitle(
-                            title: title,
-                            reportType: reportType
-                        )
-                    } catch {
-                        print("[Toadly] Failed to create GitHub issue: \(error.localizedDescription)")
-                    }
-                    
-                    // Give some time for the report to be sent
-                    Thread.sleep(forTimeInterval: 3.0)
-                }
-            }
-            
-            // Also show the default alert
-            defaultNativeErrorCallbackBlock(exception, readableError)
-        }
-    }
 }
 
-// Global C functions for exception handling
 private func handleException(exception: NSException) {
     let exceptionCount = OSAtomicIncrement32(&uncaughtExceptionCount)
+
     if exceptionCount > uncaughtExceptionMaximum {
         return
     }

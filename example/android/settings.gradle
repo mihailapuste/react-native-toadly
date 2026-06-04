@@ -1,6 +1,13 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  ex.autolinkLibrariesFromCommand([
+    "node",
+    new File(settingsDir, "../../.yarn/releases/yarn-3.6.1.cjs").absolutePath,
+    "react-native",
+    "config"
+  ])
+}
 rootProject.name = 'toadly.example'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')

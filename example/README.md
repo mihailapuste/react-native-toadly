@@ -1,6 +1,6 @@
 # Toadly Example App
 
-This example app demonstrates the basic features of the Toadly SDK for React Native, showing how to integrate bug reporting and logging into your React Native application.
+This example app demonstrates the Toadly SDK for React Native. It uses the local workspace copy of `react-native-toadly`, so changes to the SDK package can be tested here without publishing.
 
 ## Features Demonstrated
 
@@ -13,6 +13,11 @@ This example app demonstrates the basic features of the Toadly SDK for React Nat
 - Add custom log entries for business logic
 - Clear logs when needed
 
+### 3. Crash and Network Reporting
+- Enable automatic JavaScript fatal error issue submission
+- Trigger a native crash for testing
+- Capture successful and failed API calls through network monitoring
+
 ## Getting Started
 
 ### Prerequisites
@@ -21,11 +26,18 @@ Before running the example app, make sure you have:
 
 1. A GitHub account with a personal access token
 2. A repository where issues will be created
-3. React Native development environment set up
+3. React Native development environment set up for iOS or Android
+4. Node matching the repository `.nvmrc`
 
 ### Configuration
 
-1. Create a `config.ts` file in the project root with your GitHub credentials:
+Create `example/config.ts` from the checked-in template:
+
+```sh
+cp example/config.example.ts example/config.ts
+```
+
+Then fill in your GitHub credentials:
 
 ```typescript
 export const config = {
@@ -37,54 +49,50 @@ export const config = {
 };
 ```
 
+Do not commit a real GitHub token.
+
 ### Installation
 
-Install dependencies:
+Install dependencies from the repository root:
 
 ```sh
-# Using yarn
 yarn install
+```
 
-# Or using npm
-npm install
+This project uses Yarn workspaces. If `yarn` is not available globally, run the pinned Yarn release directly from the repository root:
+
+```sh
+node .yarn/releases/yarn-3.6.1.cjs install
 ```
 
 For iOS, install CocoaPods dependencies:
 
 ```sh
-cd ios && pod install && cd ..
+cd example/ios
+pod install
+cd ../..
 ```
 
 ### Running the App
 
-Start the Metro bundler:
+Run commands from the repository root.
+
+Start Metro:
 
 ```sh
-# Using yarn
-yarn start
-
-# Or using npm
-npm start
+yarn example start
 ```
 
 Run on iOS:
 
 ```sh
-# Using yarn
-yarn ios
-
-# Or using npm
-npm run ios
+yarn example ios
 ```
 
 Run on Android:
 
 ```sh
-# Using yarn
-yarn android
-
-# Or using npm
-npm run android
+yarn example android
 ```
 
 ## App Structure
@@ -93,6 +101,8 @@ The example app demonstrates Toadly's features through a simple interface:
 
 - **Bug Reporting**: Tap "Report a Bug" to open the bug reporting dialog
 - **Log Management**: Add custom logs and clear logs with the provided buttons
+- **Crash Testing**: Trigger caught, fatal JavaScript, and native errors
+- **API Testing**: Make successful and failed API calls for network logs
 
 ## Implementation Details
 
@@ -106,6 +116,8 @@ import { config } from '../config';
 
 const { token, repoOwner, repoName } = config.github;
 Toadly.setup(token, repoOwner, repoName);
+Toadly.enableAutomaticIssueSubmission(true);
+Toadly.startNetworkMonitoring();
 ```
 
 ### Custom Logging
@@ -121,11 +133,13 @@ Toadly.log('User performed an action');
 
 If you encounter issues:
 
-1. Make sure your GitHub token has the necessary permissions
-2. Verify that the repository exists and you have write access
-3. Check that all dependencies are properly installed
-4. For iOS-specific issues, try cleaning the build folder and reinstalling pods
+1. Make sure your GitHub token can create issues in the target repository.
+2. Verify that `example/config.ts` exists and matches the shape of `example/config.example.ts`.
+3. Run commands from the repository root so the workspace dependency links resolve correctly.
+4. If `yarn` is missing, use `node .yarn/releases/yarn-3.6.1.cjs <command>`.
+5. For iOS-specific issues, clean the build folder and reinstall pods in `example/ios`.
+6. If native code or Nitro specs changed, run `yarn nitrogen` before rebuilding.
 
 ## Learn More
 
-For more information about Toadly, check out the [main README](../README.md) and the [API documentation](../README.md#api-reference).
+For more information about Toadly, check out the [main README](../README.md) and the [API documentation](../README.md#api).

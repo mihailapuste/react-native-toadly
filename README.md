@@ -1,39 +1,28 @@
+# Toadly
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/52d29b6b-c638-4963-bc1b-ac62bf5ee820" alt="Screenshot" height="180">
 </p>
 
-
-
-
-
-## Introduction
-
-**Toadly** is a lightweight, open-source bug reporting tool for React Native applications
-
-Toadly helps React Native developers identify and fix issues faster by providing simple bug reporting, log collection, and GitHub integration. This project is currently under active development with more features coming soon.
+Toadly is an early-stage bug reporting SDK for React Native apps. It uses Nitro Modules to bridge JavaScript with native iOS and Android code, collects recent logs, and submits reports to GitHub issues.
 
 ## Features
 
-### Bug Reporting
-Simple in-app bug reporting dialog that lets users report issues directly from your app
+- In-app bug report dialog for user-submitted issues.
+- GitHub issue creation from manual reports and automatic crash reports.
+- JavaScript console capture for `console.log`, `console.info`, `console.warn`, and `console.error`.
+- Native log capture on iOS and Android.
+- Automatic JavaScript fatal error reporting when enabled.
+- Network request logging for `fetch` and `XMLHttpRequest`.
+- Screenshot attachment for iOS manual reports.
 
-### Log Collection
-Capture js and native logs along to provide context for bug/crash reports
+## Current Limitations
 
-### Crash Reporting
-Auto submit crashes along with logs, trace and session information
+- Android screenshot attachment is not implemented yet.
+- The public API is intentionally small and may still change before a stable release.
+- The example app stores GitHub credentials in a local `example/config.ts`; do not commit real tokens.
 
-### GitHub Integration
-Automatically create GitHub issues with detailed bug reports including logs and device info
-
-### Coming Soon
-- Network request monitoring
-- Custom metadata attachment
-- Screenshot annotations
-
-## Simple Steps to Get Started
-
-### 1. Install the Toadly package:
+## Installation
 
 ```sh
 npm install react-native-toadly react-native-nitro-modules
@@ -42,68 +31,61 @@ npm install react-native-toadly react-native-nitro-modules
 yarn add react-native-toadly react-native-nitro-modules
 ```
 
-### 2. For iOS, install CocoaPods dependencies:
+For iOS apps, install pods after adding the package:
 
 ```sh
-cd ios && pod install && cd ..
+cd ios
+pod install
+cd ..
 ```
 
-### 3. Initialize Toadly in your app:
+## Basic Usage
 
-```typescript
-import React, { useEffect } from 'react';
+```tsx
+import { useEffect } from 'react';
+import { Button } from 'react-native';
 import * as Toadly from 'react-native-toadly';
-import { config } from './config';
 
-// Initialize Toadly with your GitHub credentials
-const { token, repoOwner, repoName } = config.github;
-Toadly.setup(token, repoOwner, repoName);
+Toadly.setup('GITHUB_TOKEN', 'repo-owner', 'repo-name');
+Toadly.enableAutomaticIssueSubmission(true);
+Toadly.startNetworkMonitoring();
 
-export default function App() {
+export function App() {
   useEffect(() => {
-    // Add custom logs for better context
-    Toadly.log('App initialized');
-    
+    Toadly.log('App mounted');
+
     return () => {
-      Toadly.log('App will unmount');
+      Toadly.log('App unmounted');
     };
   }, []);
 
-  // Show the bug reporter dialog
-  const handleReportBug = () => {
-    Toadly.show();
-  };
-
-  // Rest of your app code...
+  return <Button title="Report a bug" onPress={() => Toadly.show()} />;
 }
 ```
 
-## API Reference
+## API
 
-### Core Functions
-
-- `Toadly.setup(token, repoOwner, repoName)` - Initialize Toadly with GitHub credentials
-- `Toadly.show()` - Show the bug reporting dialog
-- `Toadly.log(message)` - Add a custom log entry. Console logs are automatically captured
-- `Toadly.clearLogs()` - Manually clear collected logs
-- `Toadly.enableAutomaticIssueSubmission()` - Enable automatic issue submission for JS crashes
-- `Toadly.startNetworkMonitoring()` - Start logging network requests to be included in reports
-- `Toadly.stopNetworkMonitoring()` - Start logging network requests
-- `Toadly.isNetworkMonitoringActive()` - Check network logging enabled status
-- `Toadly.clearNetworkHistory()` - Manually clear network logs
+| Function | Description |
+| --- | --- |
+| `setup(githubToken, repoOwner, repoName)` | Configures GitHub issue submission. Call this once before showing the reporter or auto-submitting issues. |
+| `show()` | Opens the native bug report UI and attaches recent JS logs. |
+| `log(message)` | Adds a custom Toadly log entry. Console methods are captured automatically after the module is imported. |
+| `clearLogs()` | Clears collected JavaScript logs. |
+| `enableAutomaticIssueSubmission(enable = true)` | Enables or disables GitHub issue creation for fatal JavaScript errors. |
+| `startNetworkMonitoring()` | Starts capturing `fetch` and `XMLHttpRequest` activity. |
+| `stopNetworkMonitoring()` | Stops network capture and restores the original request implementations. |
+| `isNetworkMonitoringActive()` | Returns whether network capture is active. |
+| `clearNetworkHistory()` | Clears captured network request history. |
+| `crashNative()` | Intentionally crashes the native app for crash-report testing. |
 
 ## Example App
 
-Check out the [example app](./example) to see Toadly in action and explore implementation details.
+The [example app](./example) exercises manual reports, log capture, automatic JavaScript crash submission, native crash testing, and network logging. Start there when validating changes to the SDK.
 
-## Contributing
+## Development
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+This repository is a Yarn workspace with the SDK in the root package and the example app in `example/`. See [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup and [docs/resume.md](./docs/resume.md) for the current project scan, package modernization notes, and known follow-up work.
 
 ## License
 
 MIT
-
----
-
-Made with ❤️ by the Toadly team

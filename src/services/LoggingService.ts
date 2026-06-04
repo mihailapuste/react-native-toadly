@@ -73,7 +73,7 @@ class LoggingService implements ILoggingService {
           if (typeof arg === 'object') {
             try {
               return JSON.stringify(arg);
-            } catch (e) {
+            } catch {
               return String(arg);
             }
           }

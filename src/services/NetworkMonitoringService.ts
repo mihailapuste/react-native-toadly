@@ -176,7 +176,7 @@ class NetworkMonitoringService implements INetworkMonitoringService {
             bodyContent = JSON.stringify(init.body);
           }
         }
-      } catch (e) {
+      } catch {
         bodyContent = '[Error serializing request body]';
       }
 
@@ -214,7 +214,7 @@ class NetworkMonitoringService implements INetworkMonitoringService {
                 LoggingService.addLog(
                   `Network response: ${request.status} for ${request.method} ${request.url}`
                 );
-              } catch (e) {
+              } catch {
                 request.response = '[Error reading response body]';
               }
             })
@@ -306,7 +306,7 @@ class NetworkMonitoringService implements INetworkMonitoringService {
             toadlyRequest.body = '[Complex body]';
           }
         }
-      } catch (e) {
+      } catch {
         toadlyRequest.body = '[Error serializing request body]';
       }
 
@@ -322,7 +322,7 @@ class NetworkMonitoringService implements INetworkMonitoringService {
 
         try {
           toadlyRequest.response = xhr.responseText || xhr.response;
-        } catch (e) {
+        } catch {
           toadlyRequest.response = '[Error reading response body]';
         }
 

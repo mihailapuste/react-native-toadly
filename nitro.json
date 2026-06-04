@@ -9,8 +9,14 @@
   },
   "autolinking": {
     "Toadly": {
-      "swift": "Toadly",
-      "kotlin": "Toadly"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "Toadly"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "Toadly"
+      }
     }
   },
   "ignorePaths": ["node_modules"]

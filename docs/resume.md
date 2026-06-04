@@ -63,8 +63,8 @@ Important package versions currently declared in the manifests:
 | `@react-native/typescript-config` | `0.85.3` | `0.85.3` |
 | `@react-native/eslint-config` | `0.85.3` | `0.85.3` |
 | `@react-native/jest-preset` | `0.85.3` | `0.85.3` |
-| `react-native-nitro-modules` | `^0.25.2` | `0.35.9` |
-| `nitro-codegen` | `^0.25.2` | `0.29.4` |
+| `react-native-nitro-modules` | `^0.35.9` | `0.35.9` |
+| `nitrogen` | `^0.35.9` | `0.35.9` |
 | `react-native-builder-bob` | `^0.39.0` | `0.41.0` |
 | `typescript` | `^5.2.2` | `6.0.3` |
 | `eslint` | `^9.22.0` | `10.4.1` |
@@ -79,7 +79,7 @@ React Native 0.85 requires Node `^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0`, 
 1. The JavaScript React Native family is now updated to the latest compatible versions from this scan: `react-native`, `@react-native/*`, and `@react-native-community/cli*` are on the latest registry versions, while `react` is pinned to the renderer-compatible `19.2.3`.
 2. The example native projects have been aligned with the React Native 0.85.3 template where applicable, including Android SDK/Kotlin/Gradle pins, Android `MainApplication`, iOS `AppDelegate`, and the iOS pod lockfile.
 3. The React Native package migration is validated by `typecheck`, `lint`, `test`, `example react-native config`, `example build:android`, and `example build:ios`.
-4. Upgrade Nitro separately. `react-native-nitro-modules` and `nitro-codegen` do not share the same latest version, so verify compatibility before changing both. Regenerate bindings with `yarn nitrogen` and review `nitrogen/generated`.
+4. Nitro runtime and Nitrogen codegen are now updated to the latest registry versions from this scan. Regenerate bindings with `yarn nitrogen` after any future spec or Nitro dependency change.
 5. Upgrade library tooling after the native stack builds: Bob, TypeScript, ESLint, Jest, release tooling, and Turbo.
 
 ## Known Gaps

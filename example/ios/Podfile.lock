@@ -3,7 +3,7 @@ PODS:
   - hermes-engine (250829098.0.10):
     - hermes-engine/Pre-built (= 250829098.0.10)
   - hermes-engine/Pre-built (250829098.0.10)
-  - NitroModules (0.25.2):
+  - NitroModules (0.35.9):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2072,7 +2072,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   FBLazyVector: 24e62c765683b8d89006a88a2c8f5cf019f0074d
   hermes-engine: 476306a951c87d4e4623ec5bfa8e38e57a9598bf
-  NitroModules: 671bfdcb8a287fa06c645baecc5ce30b1d1c3fa1
+  NitroModules: 8308314b644c15567ffad50bb10667e8c1d82666
   RCTDeprecation: a4c521821fab57cbb125b36effe84d897d0dfa12
   RCTRequired: 9f3a7e5645d4bc3f551593de7550bb66ab6e42bc
   RCTSwiftUI: 239ed2eb9e73de5a6f518810630f0c95e01c8702
@@ -2144,7 +2144,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 9af5798e943781fd2318dab7b60f25337388047c
   ReactCommon: 3ec2a55999d296af90c24beb66c8a77dc660d3ef
   ReactNativeDependencies: d8fba4f8e1133bc3100f3d563aa289b3205abe18
-  Toadly: ffbe27f6cf644030abf12494d7f2d7cf90d337b3
+  Toadly: dd3e3385246ef81e3c07b3edb4f940af34b10513
   Yoga: 36fee8f1fca3f54a28c3d7f80e69f66d73d3af96
 
 PODFILE CHECKSUM: 68c58cc10501990fdcdb153e1a17e9442f0b5198

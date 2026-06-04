@@ -37,7 +37,7 @@ You need to run [Nitrogen](https://nitro.margelo.com/docs/nitrogen) to generate 
 
 Run **Nitrogen** in following cases:
 - When you make changes to any `*.nitro.ts` files.
-- After upgrading `react-native-nitro-modules`, `nitro-codegen`, or React Native.
+- After upgrading `react-native-nitro-modules`, `nitrogen`, or React Native.
 - When native builds fail because generated Nitro bindings are stale.
 
 To invoke **Nitrogen**, use the following command:

@@ -56,7 +56,7 @@ Important package versions currently declared in the manifests:
 | Package | Current | Registry latest from scan |
 | --- | ---: | ---: |
 | `react-native` | `0.85.3` | `0.85.3` |
-| `react` | `19.2.7` | `19.2.7` |
+| `react` | `19.2.3` | `19.2.7` |
 | `@react-native-community/cli` | `20.1.3` | `20.1.3` |
 | `@react-native/babel-preset` | `0.85.3` | `0.85.3` |
 | `@react-native/metro-config` | `0.85.3` | `0.85.3` |
@@ -72,11 +72,11 @@ Important package versions currently declared in the manifests:
 | `turbo` | `^1.10.7` | `2.9.16` |
 | `axios` | `^1.8.4` | `1.17.0` |
 
-React Native 0.85 requires Node `^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0`, so the repo now pins `v20.19.4`.
+React Native 0.85 requires Node `^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0`, so the repo now pins `v20.19.4`. React is intentionally pinned to `19.2.3` because React Native 0.85.3 embeds `react-native-renderer@19.2.3` and enforces an exact runtime version match.
 
 ## Modernization Plan
 
-1. The JavaScript React Native family is now updated to the latest registry versions from this scan: `react-native`, `react`, `@react-native/*`, and `@react-native-community/cli*`.
+1. The JavaScript React Native family is now updated to the latest compatible versions from this scan: `react-native`, `@react-native/*`, and `@react-native-community/cli*` are on the latest registry versions, while `react` is pinned to the renderer-compatible `19.2.3`.
 2. The example native projects have been aligned with the React Native 0.85.3 template where applicable, including Android SDK/Kotlin/Gradle pins, Android `MainApplication`, iOS `AppDelegate`, and the iOS pod lockfile.
 3. The React Native package migration is validated by `typecheck`, `lint`, `test`, `example react-native config`, `example build:android`, and `example build:ios`.
 4. Upgrade Nitro separately. `react-native-nitro-modules` and `nitro-codegen` do not share the same latest version, so verify compatibility before changing both. Regenerate bindings with `yarn nitrogen` and review `nitrogen/generated`.

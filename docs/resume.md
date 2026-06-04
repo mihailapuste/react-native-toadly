@@ -28,10 +28,11 @@ This document captures the current state of the project so work can resume witho
 
 ## Local Environment Observations
 
-- `.nvmrc` pins Node `v20`.
+- `.nvmrc` pins Node `v20.19.4`.
 - During this scan, the shell was using Node `v24.14.0`.
 - `yarn`, `npm`, and `corepack` were not on PATH in this shell.
 - The checked-in Yarn release works with `node .yarn/releases/yarn-3.6.1.cjs`.
+- Android SDK exists at `/Users/mihailapuste/Library/Android/sdk`, but `ANDROID_HOME` was not exported in this shell.
 
 Useful fallback commands:
 
@@ -43,6 +44,9 @@ node .yarn/releases/yarn-3.6.1.cjs test
 node .yarn/releases/yarn-3.6.1.cjs example start
 node .yarn/releases/yarn-3.6.1.cjs example ios
 node .yarn/releases/yarn-3.6.1.cjs example android
+ANDROID_HOME="$HOME/Library/Android/sdk" node .yarn/releases/yarn-3.6.1.cjs example build:android
+node .yarn/releases/yarn-3.6.1.cjs example build:ios
+cd example/ios && bundle exec pod install
 ```
 
 ## Package Baseline
@@ -51,13 +55,14 @@ Important package versions currently declared in the manifests:
 
 | Package | Current | Registry latest from scan |
 | --- | ---: | ---: |
-| `react-native` | `0.78.1` | `0.85.3` |
-| `react` | `19.0.0` | `19.2.7` |
-| `@react-native-community/cli` | `15.0.1` | `20.1.3` |
-| `@react-native/babel-preset` | `0.78.1` | `0.85.3` |
-| `@react-native/metro-config` | `0.78.1` | `0.85.3` |
-| `@react-native/typescript-config` | `0.78.1` | `0.85.3` |
-| `@react-native/eslint-config` | `^0.78.0` | `0.85.3` |
+| `react-native` | `0.85.3` | `0.85.3` |
+| `react` | `19.2.7` | `19.2.7` |
+| `@react-native-community/cli` | `20.1.3` | `20.1.3` |
+| `@react-native/babel-preset` | `0.85.3` | `0.85.3` |
+| `@react-native/metro-config` | `0.85.3` | `0.85.3` |
+| `@react-native/typescript-config` | `0.85.3` | `0.85.3` |
+| `@react-native/eslint-config` | `0.85.3` | `0.85.3` |
+| `@react-native/jest-preset` | `0.85.3` | `0.85.3` |
 | `react-native-nitro-modules` | `^0.25.2` | `0.35.9` |
 | `nitro-codegen` | `^0.25.2` | `0.29.4` |
 | `react-native-builder-bob` | `^0.39.0` | `0.41.0` |
@@ -67,16 +72,15 @@ Important package versions currently declared in the manifests:
 | `turbo` | `^1.10.7` | `2.9.16` |
 | `axios` | `^1.8.4` | `1.17.0` |
 
-The current React Native package latest declares a Node engine of `^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0`. The repo's `v20` pin may need to become more specific before upgrading.
+React Native 0.85 requires Node `^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0`, so the repo now pins `v20.19.4`.
 
 ## Modernization Plan
 
-1. Treat React Native as a native template migration, not a plain `package.json` bump. Use React Native Upgrade Helper for `0.78.1` to the target latest version and apply example app changes to Android, iOS, Metro, Babel, and TypeScript config.
-2. Upgrade the React Native family together in the root and example manifests: `react`, `react-native`, `@react-native/*`, and `@react-native-community/cli*`.
-3. Upgrade Nitro separately. `react-native-nitro-modules` and `nitro-codegen` do not share the same latest version, so verify compatibility before changing both. Regenerate bindings with `yarn nitrogen` and review `nitrogen/generated`.
-4. Upgrade library tooling after the native stack builds: Bob, TypeScript, ESLint, Jest, release tooling, and Turbo.
-5. Reinstall iOS pods from `example/ios` and rebuild both platforms.
-6. Run `typecheck`, `lint`, `test`, and at least one iOS or Android example build before considering the modernization complete.
+1. The JavaScript React Native family is now updated to the latest registry versions from this scan: `react-native`, `react`, `@react-native/*`, and `@react-native-community/cli*`.
+2. The example native projects have been aligned with the React Native 0.85.3 template where applicable, including Android SDK/Kotlin/Gradle pins, Android `MainApplication`, iOS `AppDelegate`, and the iOS pod lockfile.
+3. The React Native package migration is validated by `typecheck`, `lint`, `test`, `example react-native config`, `example build:android`, and `example build:ios`.
+4. Upgrade Nitro separately. `react-native-nitro-modules` and `nitro-codegen` do not share the same latest version, so verify compatibility before changing both. Regenerate bindings with `yarn nitrogen` and review `nitrogen/generated`.
+5. Upgrade library tooling after the native stack builds: Bob, TypeScript, ESLint, Jest, release tooling, and Turbo.
 
 ## Known Gaps
 

@@ -11,21 +11,34 @@ This project is a monorepo managed using [Yarn workspaces](https://yarnpkg.com/f
 - The library package in the root directory.
 - An example app in the `example/` directory.
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
+Use the Node version from `.nvmrc` before installing dependencies:
 
 ```sh
-yarn
+nvm use
+```
+
+To get started with the project, run `yarn install` in the root directory to install the required dependencies for each package:
+
+```sh
+yarn install
+```
+
+The repository pins Yarn 3.6.1 in `.yarn/releases`. If `yarn` is not available globally, run the checked-in release directly:
+
+```sh
+node .yarn/releases/yarn-3.6.1.cjs install
 ```
 
 > Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development.
 
 This project uses Nitro Modules. If you're not familiar with how Nitro works, make sure to check the [Nitro Modules Docs](https://nitro.margelo.com/).
 
-You need to run [Nitrogen](https://nitro.margelo.com/docs/nitrogen) to generate the boilerplate code required for this project. The example app will not build without this step.
+You need to run [Nitrogen](https://nitro.margelo.com/docs/nitrogen) to generate the boilerplate code required for this project after Nitro spec or dependency changes. Generated files are currently committed under `nitrogen/generated`, but they should be regenerated when the spec changes or during package modernization.
 
 Run **Nitrogen** in following cases:
 - When you make changes to any `*.nitro.ts` files.
-- When running the project for the first time (since the generated files are not committed to the repository).
+- After upgrading `react-native-nitro-modules`, `nitro-codegen`, or React Native.
+- When native builds fail because generated Nitro bindings are stale.
 
 To invoke **Nitrogen**, use the following command:
 
